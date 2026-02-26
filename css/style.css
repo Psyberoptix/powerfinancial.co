@@ -221,7 +221,7 @@ img { max-width: 100%; display: block; }
 .hero-right {
   position: relative;
   background: linear-gradient(to bottom, rgba(22,10,2,0.1) 0%, rgba(22,10,2,0.5) 100%),
-    url('https://images.unsplash.com/photo-1641849460719-b36172b45b35?w=1200&q=85') center/cover no-repeat;
+    url('https://images.unsplash.com/photo-Oj77q2yIjzI?w=1200&q=85') center/cover no-repeat;
 }
 .hero-caption { position: absolute; bottom: 40px; right: 40px; max-width: 260px; text-align: right; }
 .hero-caption-text {
