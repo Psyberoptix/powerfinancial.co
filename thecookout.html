@@ -1,140 +1,1671 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>The Cookout — Power Financial Agent Hub</title>
-  <meta name="robots" content="noindex, nofollow"/>
-  <meta name="description" content="Power Financial internal agent hub — weekly training schedule, spotlights, and announcements."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/style.css"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Cookout â Power Financial Agent Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Permanent+Marker&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --charcoal: #1a1410;
+    --smoke: #2a2320;
+    --ash: #3d3530;
+    --ember: #ff6b35;
+    --flame: #ff9f1c;
+    --glow: #ffbe0b;
+    --coal-red: #d62828;
+    --warm-white: #fef3e2;
+    --cream: #f5e6d0;
+    --wood: #8b6914;
+    --sage: #a8b59c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--charcoal);
+    color: var(--warm-white);
+    overflow-x: hidden;
+  }
+
+  /* ========== SMOKE PARTICLES ========== */
+  .smoke-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .smoke {
+    position: absolute;
+    bottom: -20px;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: smokeRise linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes smokeRise {
+    0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.4; }
+    50% { opacity: 0.15; }
+    100% { transform: translateY(-100vh) scale(8) rotate(180deg); opacity: 0; }
+  }
+
+  /* ========== EMBER PARTICLES ========== */
+  .ember {
+    position: absolute;
+    bottom: -5px;
+    width: 3px;
+    height: 3px;
+    background: var(--ember);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--ember), 0 0 12px var(--flame);
+    animation: emberFloat linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes emberFloat {
+    0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+    5% { opacity: 1; }
+    30% { opacity: 0.8; }
+    100% { transform: translateY(-70vh) translateX(var(--drift)) scale(0); opacity: 0; }
+  }
+
+  /* ========== NAVIGATION ========== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(26,20,16,0.95) 0%, transparent 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--warm-white);
+  }
+
+  .nav-logo-box {
+    width: 40px;
+    height: 40px;
+    background: var(--ember);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Dela Gothic One', sans-serif;
+    font-size: 14px;
+    color: var(--charcoal);
+    box-shadow: 0 0 20px rgba(255,107,53,0.3);
+  }
+
+  .nav-brand {
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+  }
+
+  .nav-brand span { color: var(--flame); }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: rgba(254,243,226,0.6);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--flame); }
+
+  .nav-cta {
+    padding: 10px 24px;
+    background: transparent;
+    border: 1.5px solid var(--ember);
+    border-radius: 100px;
+    color: var(--ember) !important;
+    font-weight: 600 !important;
+    transition: all 0.3s !important;
+  }
+
+  .nav-cta:hover {
+    background: var(--ember) !important;
+    color: var(--charcoal) !important;
+    box-shadow: 0 0 30px rgba(255,107,53,0.4);
+  }
+
+  /* ========== HERO ========== */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 100%, rgba(255,107,53,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 30% 80%, rgba(214,40,40,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 70% 80%, rgba(255,159,28,0.08) 0%, transparent 50%);
+    z-index: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    background: rgba(255,107,53,0.1);
+    border: 1px solid rgba(255,107,53,0.25);
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 40px;
+    animation: fadeInDown 0.8s ease;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--ember);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--ember);
+    animation: pulse 2s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--ember); }
+    50% { opacity: 0.5; box-shadow: 0 0 16px var(--ember); }
+  }
+
+  .hero h1 {
+    font-family: 'Dela Gothic One', sans-serif;
+    font-size: clamp(4rem, 10vw, 9rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin-bottom: 12px;
+    animation: fadeInUp 0.8s ease 0.2s both;
+    background: linear-gradient(135deg, var(--warm-white) 0%, var(--flame) 50%, var(--ember) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 4px 30px rgba(255,107,53,0.3));
+  }
+
+  .hero-logo {
+    display: inline-block;
+    width: 0.75em;
+    height: 0.75em;
+    vertical-align: middle;
+    margin-left: 0.08em;
+    margin-bottom: 0.05em;
+    filter: drop-shadow(0 0 25px rgba(255,190,11,0.5)) drop-shadow(0 0 50px rgba(255,159,28,0.25));
+    animation: logoFloat 4s ease infinite;
+  }
+
+  @keyframes logoFloat {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-5px) scale(1.02); }
+  }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: rgba(254,243,226,0.5);
+    max-width: 560px;
+    margin: 24px auto 0;
+    line-height: 1.7;
+    font-weight: 400;
+    animation: fadeInUp 0.8s ease 0.4s both;
+  }
+
+  /* Grill line decoration */
+  .grill-lines {
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+    margin-top: 60px;
+    animation: fadeInUp 0.8s ease 0.6s both;
+    opacity: 0.2;
+  }
+
+  .grill-lines span {
+    display: block;
+    width: 200px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--ember), transparent);
+    border-radius: 2px;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: fadeInUp 0.8s ease 1s both;
+  }
+
+  .scroll-hint span {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(254,243,226,0.3);
+    font-weight: 500;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--ember), transparent);
+    animation: scrollPulse 2s ease infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 1; height: 40px; }
+    50% { opacity: 0.4; height: 25px; }
+  }
+
+  /* ========== SECTIONS SHARED ========== */
+  section {
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Dela Gothic One', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  .section-title .accent {
+    font-family: 'Caveat', cursive;
+    color: var(--flame);
+    font-weight: 700;
+  }
+
+  /* ========== SCHEDULE ========== */
+  .schedule {
+    padding: 100px 24px 120px;
+    background: var(--smoke);
+    position: relative;
+  }
+
+  .schedule::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, var(--charcoal), transparent);
+    pointer-events: none;
+  }
+
+  .schedule-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .schedule-subtitle {
+    color: rgba(254,243,226,0.45);
+    font-size: 15px;
+    margin-bottom: 60px;
+  }
+
+  .day-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,107,53,0.08);
+    border-radius: 16px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    cursor: pointer;
+  }
+
+  .day-card:hover {
+    border-color: rgba(255,107,53,0.2);
+    background: rgba(255,107,53,0.04);
+  }
+
+  .day-card.open {
+    border-color: rgba(255,107,53,0.25);
+    background: rgba(255,107,53,0.06);
+    box-shadow: 0 8px 40px rgba(255,107,53,0.08), inset 0 1px 0 rgba(255,107,53,0.1);
+  }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 28px;
+  }
+
+  .day-header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .day-name {
+    font-family: 'Dela Gothic One', sans-serif;
+    font-size: 1.1rem;
+    color: var(--warm-white);
+  }
+
+  .day-date {
+    font-size: 0.85rem;
+    color: rgba(254,243,226,0.35);
+    font-weight: 500;
+  }
+
+  .day-toggle {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255,107,53,0.1);
+    color: var(--ember);
+    font-size: 1.2rem;
+    transition: all 0.3s;
+  }
+
+  .day-card.open .day-toggle {
+    background: var(--ember);
+    color: var(--charcoal);
+    transform: rotate(45deg);
+  }
+
+  .day-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .day-card.open .day-content {
+    max-height: 500px;
+  }
+
+  .event {
+    display: flex;
+    gap: 24px;
+    padding: 0 28px 24px;
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  .event + .event {
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,107,53,0.06);
+  }
+
+  .event-time {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 0.9rem;
+    color: var(--flame);
+    white-space: nowrap;
+    min-width: 80px;
+    padding-top: 2px;
+  }
+
+  .event-info h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--warm-white);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  .event-info p {
+    font-size: 0.88rem;
+    color: rgba(254,243,226,0.5);
+    line-height: 1.6;
+    margin-bottom: 6px;
+  }
+
+  .event-info a {
+    color: var(--ember);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+
+  .event-info a:hover {
+    color: var(--flame);
+  }
+
+  .event-info .zoom-info {
+    font-size: 0.82rem;
+    color: rgba(254,243,226,0.4);
+  }
+
+  .event-info .zoom-info strong {
+    color: rgba(254,243,226,0.55);
+  }
+
+  /* ========== CONVENTION ========== */
+  .convention {
+    padding: 120px 24px;
+    background: var(--charcoal);
+    display: flex;
+    justify-content: center;
+    position: relative;
+  }
+
+  .convention-card {
+    position: relative;
+    max-width: 900px;
+    width: 100%;
+    padding: 80px 60px;
+    background:
+      linear-gradient(135deg, rgba(255,107,53,0.15) 0%, rgba(214,40,40,0.08) 50%, rgba(255,159,28,0.1) 100%);
+    border: 1px solid rgba(255,107,53,0.2);
+    border-radius: 24px;
+    text-align: center;
+    overflow: hidden;
+    box-shadow: 0 20px 80px rgba(255,107,53,0.1);
+  }
+
+  .convention-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle at 30% 70%, rgba(255,107,53,0.06) 0%, transparent 50%),
+                radial-gradient(circle at 70% 30%, rgba(255,159,28,0.04) 0%, transparent 50%);
+    animation: shiftGlow 8s ease infinite;
+  }
+
+  @keyframes shiftGlow {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(5%, -3%); }
+    66% { transform: translate(-3%, 5%); }
+  }
+
+  .convention-card > * { position: relative; z-index: 1; }
+
+  .convention-year {
+    font-family: 'Permanent Marker', cursive;
+    font-size: clamp(3rem, 6vw, 5rem);
+    color: var(--flame);
+    text-shadow: 0 0 40px rgba(255,159,28,0.3);
+    margin-bottom: 8px;
+  }
+
+  .convention-name {
+    font-family: 'Dela Gothic One', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+
+  .convention-desc {
+    color: rgba(254,243,226,0.5);
+    font-size: 1.05rem;
+    margin-bottom: 28px;
+    line-height: 1.7;
+  }
+
+  .convention-location {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 28px;
+    background: rgba(255,107,53,0.1);
+    border: 1px solid rgba(255,107,53,0.15);
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--flame);
+  }
+
+  /* ========== SPOTLIGHTS ========== */
+  .spotlights {
+    padding: 120px 24px;
+    background: var(--smoke);
+    position: relative;
+  }
+
+  .spotlights::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, var(--charcoal), transparent);
+    pointer-events: none;
+  }
+
+  .spotlights-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .spotlights-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 60px;
+    text-align: left;
+  }
+
+  .spotlight-card {
+    padding: 40px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,107,53,0.08);
+    border-radius: 20px;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .spotlight-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--ember), var(--flame), transparent);
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .spotlight-card:hover::before { opacity: 1; }
+
+  .spotlight-card:hover {
+    border-color: rgba(255,107,53,0.15);
+    background: rgba(255,107,53,0.03);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+
+  .spotlight-type {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 16px;
+    display: flex;
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Cookout â Power Financial Agent Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Permanent+Marker&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --charcoal: #1a1410;
+    --smoke: #2a2320;
+    --ash: #3d3530;
+    --ember: #ff6b35;
+    --flame: #ff9f1c;
+    --glow: #ffbe0b;
+    --coal-red: #d62828;
+    --warm-white: #fef3e2;
+    --cream: #f5e6d0;
+    --wood: #8b6914;
+    --sage: #a8b59c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--charcoal);
+    color: var(--warm-white);
+    overflow-x: hidden;
+  }
+
+  /* ========== SMOKE PARTICLES ========== */
+  .smoke-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .smoke {
+    position: absolute;
+    bottom: -20px;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: smokeRise linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes smokeRise {
+    0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.4; }
+    50% { opacity: 0.15; }
+    100% { transform: translateY(-100vh) scale(8) rotate(180deg); opacity: 0; }
+  }
+
+  /* ========== EMBER PARTICLES ========== */
+  .ember {
+    position: absolute;
+    bottom: -5px;
+    width: 3px;
+    height: 3px;
+    background: var(--ember);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--ember), 0 0 12px var(--flame);
+    animation: emberFloat linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes emberFloat {
+    0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+    5% { opacity: 1; }
+    30% { opacity: 0.8; }
+    100% { transform: translateY(-70vh) translateX(var(--drift)) scale(0); opacity: 0; }
+  }
+
+  /* ========== NAVIGATION ========== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(26,20,16,0.95) 0%, transparent 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--warm-white);
+  }
+
+  .nav-logo-box {
+    width: 40px;
+    height: 40px;
+    background: var(--ember);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Dela Gothic One', sans-serif;
+    font-size: 14px;
+    color: var(--charcoal);
+    box-shadow: 0 0 20px rgba(255,107,53,0.3);
+  }
+
+  .nav-brand {
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+  }
+
+  .nav-brand span { color: var(--flame); }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: rgba(254,243,226,0.6);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--flame); }
+
+  .nav-cta {
+    padding: 10px 24px;
+    background: transparent;
+    border: 1.5px solid var(--ember);
+    border-radius: 100px;
+    color: var(--ember) !important;
+    font-weight: 600 !important;
+    transition: all 0.3s !important;
+  }
+
+  .nav-cta:hover {
+    background: var(--ember) !important;
+    color: var(--charcoal) !important;
+    box-shadow: 0 0 30px rgba(255,107,53,0.4);
+  }
+
+  /* ========== HERO ========== */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 100%, rgba(255,107,53,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 30% 80%, rgba(214,40,40,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 70% 80%, rgba(255,159,28,0.08) 0%, transparent 50%);
+    z-index: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    background: rgba(255,107,53,0.1);
+    border: 1px solid rgba(255,107,53,0.25);
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 40px;
+    animation: fadeInDown 0.8s ease;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--ember);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--ember);
+    animation: pulse 2s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--ember); }
+    50% { opacity: 0.5; box-shadow: 0 0 16px var(--ember); }
+  }
+
+  .hero h1 {
+    font-family: 'Dela Gothic One', sans-serif;
+    font-size: clamp(4rem, 10vw, 9rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin-bottom: 12px;
+    animation: fadeInUp 0.8s ease 0.2s both;
+    background: linear-gradient(135deg, var(--warm-white) 0%, var(--flame) 50%, var(--ember) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 4px 30px rgba(255,107,53,0.3));
+  }
+
+  .hero-logo {
+    display: inline-block;
+    width: 0.75em;
+    height: 0.75em;
+    vertical-align: middle;
+    margin-left: 0.08em;
+    margin-bottom: 0.05em;
+    filter: drop-shadow(0 0 25px rgba(255,190,11,0.5)) drop-shadow(0 0 50px rgba(255,159,28,0.25));
+    animation: logoFloat 4s ease infinite;
+  }
+
+  @keyframes logoFloat {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-5px) scale(1.02); }
+  }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: rgba(254,243,226,0.5);
+    max-width: 560px;
+    margin: 24px auto 0;
+    line-height: 1.7;
+    font-weight: 400;
+    animation: fadeInUp 0.8s ease 0.4s both;
+  }
+
+  /* Grill line decoration */
+  .grill-lines {
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+    margin-top: 60px;
+    animation: fadeInUp 0.8s ease 0.6s both;
+    opacity: 0.2;
+  }
+
+  .grill-lines span {
+    display: block;
+    width: 200px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--ember), transparent);
+    border-radius: 2px;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: fadeInUp 0.8s ease 1s both;
+  }
+
+  .scroll-hint span {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(254,243,226,0.3);
+    font-weight: 500;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--ember), transparent);
+    animation: scrollPulse 2s ease infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 1; height: 40px; }
+    50% { opacity: 0.4; height: 25px; }
+  }
+
+  /* ========== SECTIONS SHARED ========== */
+  section {
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Dela Gothic One', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  .section-title .accent {
+    font-family: 'Caveat', cursive;
+    color: var(--flame);
+    font-weight: 700;
+  }
+
+  /* ========== SCHEDULE ========== */
+  .schedule {
+    padding: 100px 24px 120px;
+    background: var(--smoke);
+    position: relative;
+  }
+
+  .schedule::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, var(--charcoal), transparent);
+    pointer-events: none;
+  }
+
+  .schedule-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .schedule-subtitle {
+    color: rgba(254,243,226,0.45);
+    font-size: 15px;
+    margin-bottom: 60px;
+  }
+
+  .day-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,107,53,0.08);
+    border-radius: 16px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    cursor: pointer;
+  }
+
+  .day-card:hover {
+    border-color: rgba(255,107,53,0.2);
+    background: rgba(255,107,53,0.04);
+  }
+
+  .day-card.open {
+    border-color: rgba(255,107,53,0.25);
+    background: rgba(255,107,53,0.06);
+    box-shadow: 0 8px 40px rgba(255,107,53,0.08), inset 0 1px 0 rgba(255,107,53,0.1);
+  }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 28px;
+  }
+
+  .day-header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .day-name {
+    font-family: 'Dela Gothic One', sans-serif;
+    font-size: 1.1rem;
+    color: var(--warm-white);
+  }
+
+  .day-date {
+    font-size: 0.85rem;
+    color: rgba(254,243,226,0.35);
+    font-weight: 500;
+  }
+
+  .day-toggle {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255,107,53,0.1);
+    color: var(--ember);
+    font-size: 1.2rem;
+    transition: all 0.3s;
+  }
+
+  .day-card.open .day-toggle {
+    background: var(--ember);
+    color: var(--charcoal);
+    transform: rotate(45deg);
+  }
+
+  .day-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .day-card.open .day-content {
+    max-height: 500px;
+  }
+
+  .event {
+    display: flex;
+    gap: 24px;
+    padding: 0 28px 24px;
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  .event + .event {
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,107,53,0.06);
+  }
+
+  .event-time {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 0.9rem;
+    color: var(--flame);
+    white-space: nowrap;
+    min-width: 80px;
+    padding-top: 2px;
+  }
+
+  .event-info h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--warm-white);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  .event-info p {
+    font-size: 0.88rem;
+    color: rgba(254,243,226,0.5);
+    line-height: 1.6;
+    margin-bottom: 6px;
+  }
+
+  .event-info a {
+    color: var(--ember);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+
+  .event-info a:hover {
+    color: var(--flame);
+  }
+
+  .event-info .zoom-info {
+    font-size: 0.82rem;
+    color: rgba(254,243,226,0.4);
+  }
+
+  .event-info .zoom-info strong {
+    color: rgba(254,243,226,0.55);
+  }
+
+  /* ========== CONVENTION ========== */
+  .convention {
+    padding: 120px 24px;
+    background: var(--charcoal);
+    display: flex;
+    justify-content: center;
+    position: relative;
+  }
+
+  .convention-card {
+    position: relative;
+    max-width: 900px;
+    width: 100%;
+    padding: 80px 60px;
+    background:
+      linear-gradient(135deg, rgba(255,107,53,0.15) 0%, rgba(214,40,40,0.08) 50%, rgba(255,159,28,0.1) 100%);
+    border: 1px solid rgba(255,107,53,0.2);
+    border-radius: 24px;
+    text-align: center;
+    overflow: hidden;
+    box-shadow: 0 20px 80px rgba(255,107,53,0.1);
+  }
+
+  .convention-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle at 30% 70%, rgba(255,107,53,0.06) 0%, transparent 50%),
+                radial-gradient(circle at 70% 30%, rgba(255,159,28,0.04) 0%, transparent 50%);
+    animation: shiftGlow 8s ease infinite;
+  }
+
+  @keyframes shiftGlow {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(5%, -3%); }
+    66% { transform: translate(-3%, 5%); }
+  }
+
+  .convention-card > * { position: relative; z-index: 1; }
+
+  .convention-year {
+    font-family: 'Permanent Marker', cursive;
+    font-size: clamp(3rem, 6vw, 5rem);
+    color: var(--flame);
+    text-shadow: 0 0 40px rgba(255,159,28,0.3);
+    margin-bottom: 8px;
+  }
+
+  .convention-name {
+    font-family: 'Dela Gothic One', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+
+  .convention-desc {
+    color: rgba(254,243,226,0.5);
+    font-size: 1.05rem;
+    margin-bottom: 28px;
+    line-height: 1.7;
+  }
+
+  .convention-location {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 28px;
+    background: rgba(255,107,53,0.1);
+    border: 1px solid rgba(255,107,53,0.15);
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--flame);
+  }
+
+  /* ========== SPOTLIGHTS ========== */
+  .spotlights {
+    padding: 120px 24px;
+    background: var(--smoke);
+    position: relative;
+  }
+
+  .spotlights::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, var(--charcoal), transparent);
+    pointer-events: none;
+  }
+
+  .spotlights-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .spotlights-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 60px;
+    text-align: left;
+  }
+
+  .spotlight-card {
+    padding: 40px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,107,53,0.08);
+    border-radius: 20px;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .spotlight-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--ember), var(--flame), transparent);
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .spotlight-card:hover::before { opacity: 1; }
+
+  .spotlight-card:hover {
+    border-color: rgba(255,107,53,0.15);
+    background: rgba(255,107,53,0.03);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+
+  .spotlight-type {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .spotlight-type::before {
+    content: '';
+    width: 4px; height: 4px;
+    background: var(--ember);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--ember);
+  }
+
+  .spotlight-name {
+    font-family: 'Dela Gothic One', sans-serif;
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+    letter-spacing: -0.02em;
+  }
+
+  .spotlight-title {
+    font-size: 0.85rem;
+    color: var(--flame);
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .spotlight-bio {
+    font-size: 0.9rem;
+    color: rgba(254,243,226,0.45);
+    line-height: 1.7;
+  }
+
+  /* ========== TRAINING CTA ========== */
+  .training {
+    padding: 120px 24px;
+    background: var(--charcoal);
+    text-align: center;
+    position: relative;
+  }
+
+  .training::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 300px;
+    background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(255,107,53,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .training-inner {
+    max-width: 640px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .training-title {
+    font-family: 'Dela Gothic One', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+
+  .training-title .accent {
+    font-family: 'Caveat', cursive;
+    color: var(--flame);
+    font-weight: 700;
+  }
+
+  .training-desc {
+    color: rgba(254,243,226,0.45);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: 40px;
+    max-width: 540px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .btn-fire {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 40px;
+    background: linear-gradient(135deg, var(--ember), var(--coal-red));
+    border: none;
+    border-radius: 100px;
+    color: var(--warm-white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 20px rgba(255,107,53,0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-fire::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-fire:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 40px rgba(255,107,53,0.4);
+  }
+
+  .btn-fire:hover::before { left: 100%; }
+
+  /* ========== FOOTER ========== */
+  footer {
+    padding: 80px 24px 40px;
+    background: var(--smoke);
+    border-top: 1px solid rgba(255,107,53,0.08);
+  }
+
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+  }
+
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .footer-brand-box {
+    width: 32px; height: 32px;
+    background: var(--ember);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Dela Gothic One', sans-serif;
+    font-size: 11px;
+    color: var(--charcoal);
+  }
+
+  .footer-brand-text {
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  .footer-brand-text span { color: var(--flame); }
+
+  .footer-desc {
+    font-size: 0.85rem;
+    color: rgba(254,243,226,0.35);
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+
+  .footer-col h5 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(254,243,226,0.5);
+    margin-bottom: 20px;
+  }
+
+  .footer-col ul {
+    list-style: none;
+  }
+
+  .footer-col li { margin-bottom: 12px; }
+
+  .footer-col a {
+    color: rgba(254,243,226,0.4);
+    text-decoration: none;
+    font-size: 0.88rem;
+    transition: color 0.3s;
+  }
+
+  .footer-col a:hover { color: var(--ember); }
+
+  .footer-bottom {
+    max-width: 1100px;
+    margin: 60px auto 0;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: rgba(254,243,226,0.25);
+  }
+
+  .footer-bottom a {
+    color: rgba(254,243,226,0.3);
+    text-decoration: none;
+    margin-left: 24px;
+    transition: color 0.3s;
+  }
+
+  .footer-bottom a:hover { color: var(--ember); }
+
+  /* ========== ANIMATIONS ========== */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ========== TEXTURE OVERLAY ========== */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 999;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.025;
+    mix-blend-mode: overlay;
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .spotlights-grid { grid-template-columns: 1fr; }
+    .footer-inner { grid-template-columns: 1fr 1fr; gap: 40px; }
+    .convention-card { padding: 50px 30px; }
+    .event { flex-direction: column; gap: 6px; }
+    .day-header { padding: 16px 20px; }
+  }
+</style>
 </head>
 <body>
 
-<!-- NAV (minimal — no topbar on internal page) -->
-<nav class="nav">
-  <div class="container">
-    <div class="nav-inner">
-      <a href="index.html" class="nav-brand">
-        <div class="nav-mark">Pwr</div>
-        <span class="nav-name">Power <span>Financial</span></span>
-      </a>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="index.html#services">Services</a></li>
-        <li><a href="index.html#guide-faq">Resources</a></li>
-        <li><a href="index.html#cta">Contact</a></li>
-      </ul>
-      <div class="nav-right">
-        <span class="nav-phone"></span>
-        <a href="index.html#cta" class="btn btn-primary" style="font-size:0.78rem; padding:10px 20px;">Book a Free Call</a>
-      </div>
-      <button class="nav-toggle" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-    <div class="nav-mobile">
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="index.html#services">Services</a>
-      <a href="index.html#guide-faq">Resources</a>
-      <a href="index.html#cta">Contact</a>
-      <a href="careers.html">Careers</a>
-      <a href="index.html#cta" class="btn btn-primary">Book a Free Call</a>
-    </div>
-  </div>
+<!-- SMOKE & EMBERS -->
+<div class="smoke-container" id="particles"></div>
+
+<!-- NAVIGATION -->
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-box">Pwr</div>
+    <div class="nav-brand">Power <span>Financial</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/#services">Services</a></li>
+    <li><a href="/#guide-faq">Resources</a></li>
+    <li><a href="/#cta">Contact</a></li>
+    <li><a href="/#cta" class="nav-cta">Book a Free Call</a></li>
+  </ul>
 </nav>
 
-<!-- COOKOUT HEADER -->
-<section class="cookout-header">
-  <div class="container">
-    <span class="label">Internal &bull; Agents Only</span>
-    <h1 class="editorial" style="font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; color:var(--white); line-height:1.1; margin:16px 0 20px;">The Cookout <span style="color:var(--gold); font-style:italic;">&#127790;</span></h1>
-    <p style="font-size:1.05rem; color:rgba(255,255,255,0.55); line-height:1.8; max-width:600px; margin:0 auto;">Your weekly training schedule, team spotlights, and everything you need to stay plugged in.</p>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">Internal &bull; Agents Only</div>
+    <h1>The Cookout <svg class="hero-logo" viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
+      <!-- Bold 3-pointed crown -->
+      <path d="M10 75 L10 40 L30 55 L60 8 L90 55 L110 40 L110 75 Z"
+        fill="#d4a418" stroke="#c8960c" stroke-width="2" stroke-linejoin="round"/>
+      <!-- Crown band -->
+      <rect x="8" y="72" width="104" height="18" rx="3" fill="#d4a418" stroke="#c8960c" stroke-width="2"/>
+      <!-- Crown jewel dots -->
+      <circle cx="35" cy="58" r="5" fill="#1a1410" opacity="0.4"/>
+      <circle cx="60" cy="40" r="6" fill="#1a1410" opacity="0.4"/>
+      <circle cx="85" cy="58" r="5" fill="#1a1410" opacity="0.4"/>
+    </svg></h1>
+    <p class="hero-sub">Your weekly training schedule, team spotlights, and everything you need to stay plugged in.</p>
+    <div class="grill-lines">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
   </div>
 </section>
 
 <!-- WEEKLY SCHEDULE -->
-<section class="content-section alt schedule-section">
-  <div class="container">
-    <div style="text-align:center; margin-bottom:48px;">
-      <div class="label">This Week&rsquo;s Schedule</div>
-      <h2 class="editorial" style="font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3vw,2.5rem); font-weight:900; color:var(--text); line-height:1.15; margin:12px 0;">Weekly Training <span style="color:var(--gold); font-style:italic;">&amp; Calls</span></h2>
-      <p style="font-size:0.95rem; color:var(--text-soft); line-height:1.8; max-width:580px; margin:0 auto;">Click any day to see the full schedule. All times are Eastern.</p>
+<section class="schedule">
+  <div class="schedule-inner reveal">
+    <div class="section-label">This Week's Schedule</div>
+    <h2 class="section-title">Weekly Training <span class="accent">& Calls</span></h2>
+    <p class="schedule-subtitle">Click any day to see the full schedule. All times are Eastern.</p>
+
+    <!-- Monday -->
+    <div class="day-card open" onclick="toggleDay(this)">
+      <div class="day-header">
+        <div class="day-header-left">
+          <span class="day-name">Monday</span>
+          <span class="day-date">03.16</span>
+        </div>
+        <div class="day-toggle">+</div>
+      </div>
+      <div class="day-content">
+        <div class="event">
+          <div class="event-time">6:00 PM</div>
+          <div class="event-info">
+            <h4>Recognition and Updates Meeting</h4>
+            <p>Team recognition, company updates, and announcements to kick off the week.</p>
+            <div class="zoom-info"><a href="https://www.WeCanMeetHere.live">www.WeCanMeetHere.live</a> &bull; <strong>ZoomID:</strong> 216 647 3439</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div style="max-width:720px; margin:0 auto;">
-      <!-- MONDAY 03.16.2026 -->
-      <div class="schedule-day open">
-        <div class="schedule-day-header">
-          <h3>Monday <span style="font-weight:400; font-size:0.85em; opacity:0.7;">03.16</span></h3>
-          <span class="schedule-toggle">&minus;</span>
+    <!-- Tuesday -->
+    <div class="day-card" onclick="toggleDay(this)">
+      <div class="day-header">
+        <div class="day-header-left">
+          <span class="day-name">Tuesday</span>
+          <span class="day-date">03.17</span>
         </div>
-        <div class="schedule-day-content">
-          <div class="schedule-event">
-            <div class="event-time">6:00 PM</div>
-            <div class="event-details">
-              <h4>Recognition and Updates Meeting</h4>
-              <p>Team recognition, company updates, and announcements to kick off the week.</p>
-              <p><a href="https://www.WeCanMeetHere.live">www.WeCanMeetHere.live</a> &bull; <strong>ZoomID:</strong> 216 647 3439</p>
-            </div>
+        <div class="day-toggle">+</div>
+      </div>
+      <div class="day-content">
+        <div class="event">
+          <div class="event-time">6:00 PM</div>
+          <div class="event-info">
+            <h4>John Beverly aka &ldquo;The Fly Insurance Guy&rdquo; &mdash; Referral Training</h4>
+            <p>Special guest training on building and maximizing your referral network.</p>
+            <div class="zoom-info"><a href="https://www.WeCanMeetHere.live">www.WeCanMeetHere.live</a> &bull; <strong>ZoomID:</strong> 216 647 3439</div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- TUESDAY 03.17.2026 -->
-      <div class="schedule-day">
-        <div class="schedule-day-header">
-          <h3>Tuesday <span style="font-weight:400; font-size:0.85em; opacity:0.7;">03.17</span></h3>
-          <span class="schedule-toggle">+</span>
+    <!-- Wednesday -->
+    <div class="day-card" onclick="toggleDay(this)">
+      <div class="day-header">
+        <div class="day-header-left">
+          <span class="day-name">Wednesday</span>
+          <span class="day-date">03.18</span>
         </div>
-        <div class="schedule-day-content">
-          <div class="schedule-event">
-            <div class="event-time">6:00 PM</div>
-            <div class="event-details">
-              <h4>John Beverly aka &ldquo;The Fly Insurance Guy&rdquo; &mdash; Referral Training</h4>
-              <p>Special guest training on building and maximizing your referral network.</p>
-              <p><a href="https://www.WeCanMeetHere.live">www.WeCanMeetHere.live</a> &bull; <strong>ZoomID:</strong> 216 647 3439</p>
-            </div>
+        <div class="day-toggle">+</div>
+      </div>
+      <div class="day-content">
+        <div class="event">
+          <div class="event-time">6:00 PM</div>
+          <div class="event-info">
+            <h4>IUL MasterClass</h4>
+            <p>Deep-dive training on Indexed Universal Life &mdash; concepts, illustrations, and closing strategies.</p>
+            <div class="zoom-info"><strong>ZoomID:</strong> 253 286 9728 &bull; <strong>Passcode:</strong> 2026$</div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- WEDNESDAY 03.18.2026 -->
-      <div class="schedule-day">
-        <div class="schedule-day-header">
-          <h3>Wednesday <span style="font-weight:400; font-size:0.85em; opacity:0.7;">03.18</span></h3>
-          <span class="schedule-toggle">+</span>
+    <!-- Friday -->
+    <div class="day-card" onclick="toggleDay(this)">
+      <div class="day-header">
+        <div class="day-header-left">
+          <span class="day-name">Friday</span>
+          <span class="day-date">03.20</span>
         </div>
-        <div class="schedule-day-content">
-          <div class="schedule-event">
-            <div class="event-time">6:00 PM</div>
-            <div class="event-details">
-              <h4>IUL MasterClass</h4>
-              <p>Deep-dive training on Indexed Universal Life &mdash; concepts, illustrations, and closing strategies.</p>
-              <p><strong>ZoomID:</strong> 253 286 9728 &bull; <strong>Passcode:</strong> 2026$</p>
-            </div>
-          </div>
-        </div>
+        <div class="day-toggle">+</div>
       </div>
-
-      <!-- FRIDAY 03.20.2026 -->
-      <div class="schedule-day">
-        <div class="schedule-day-header">
-          <h3>Friday <span style="font-weight:400; font-size:0.85em; opacity:0.7;">03.20</span></h3>
-          <span class="schedule-toggle">+</span>
-        </div>
-        <div class="schedule-day-content">
-          <div class="schedule-event">
-            <div class="event-time">12:00 PM</div>
-            <div class="event-details">
-              <h4>Social Media/AI Training &mdash; &ldquo;Building Landing Pages that Don&rsquo;t Suck&rdquo;</h4>
-              <p>Hands-on workshop on creating high-converting landing pages using AI tools and social media strategies.</p>
-              <p><a href="https://www.WeCanMeetHere.live">www.WeCanMeetHere.live</a> &bull; <strong>ZoomID:</strong> 216 647 3439</p>
-            </div>
+      <div class="day-content">
+        <div class="event">
+          <div class="event-time">12:00 PM</div>
+          <div class="event-info">
+            <h4>Social Media/AI Training &mdash; &ldquo;Building Landing Pages that Don&rsquo;t Suck&rdquo;</h4>
+            <p>Hands-on workshop on creating high-converting landing pages using AI tools and social media strategies.</p>
+            <div class="zoom-info"><a href="https://www.WeCanMeetHere.live">www.WeCanMeetHere.live</a> &bull; <strong>ZoomID:</strong> 216 647 3439</div>
           </div>
         </div>
       </div>
@@ -142,101 +1673,154 @@
   </div>
 </section>
 
-<!-- CONVENTION BANNER -->
-<section class="content-section white">
-  <div class="container">
-    <div class="convention-banner">
-      <h2>2026 Annual Convention</h2>
-      <p>Join us for four days of training, networking, and celebration.</p>
-      <div class="convention-date">&#127758; Medell&iacute;n, Colombia &bull; June 23&ndash;26, 2026</div>
-    </div>
+<!-- CONVENTION -->
+<section class="convention">
+  <div class="convention-card reveal">
+    <div class="convention-year">2026</div>
+    <h2 class="convention-name">Annual Convention</h2>
+    <p class="convention-desc">Join us for four days of training, networking, and celebration.</p>
+    <div class="convention-location">&#127758; Medell&iacute;n, Colombia &bull; June 23&ndash;26, 2026</div>
   </div>
 </section>
 
 <!-- AGENT SPOTLIGHTS -->
-<section class="content-section dark">
-  <div class="container">
-    <div style="text-align:center; margin-bottom:40px;">
-      <div class="label">Agent Spotlights</div>
-      <h2 class="editorial" style="font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3vw,2.5rem); font-weight:900; color:var(--white); line-height:1.15; margin:12px 0;">Celebrating Our <span style="color:var(--gold); font-style:italic;">Stars</span></h2>
-    </div>
-    <div class="spotlight-grid">
-      <div class="spotlight-card">
-        <div class="label">Leadership Spotlight</div>
-        <h3>Diana Cervantes</h3>
-        <div class="role">Chief Operating Officer</div>
-        <p>Diana keeps the engine running. From onboarding new agents to managing carrier relationships, she&rsquo;s the operational backbone of Power Financial. Her dedication to building systems that work for our agents &mdash; not against them &mdash; is what makes this team move.</p>
+<section class="spotlights">
+  <div class="spotlights-inner">
+    <div class="section-label reveal">Agent Spotlights</div>
+    <h2 class="section-title reveal">Celebrating Our <span class="accent">Stars</span></h2>
+
+    <div class="spotlights-grid">
+      <div class="spotlight-card reveal">
+        <div class="spotlight-type">Leadership Spotlight</div>
+        <h3 class="spotlight-name">Diana Cervantes</h3>
+        <div class="spotlight-title">Chief Operating Officer</div>
+        <p class="spotlight-bio">Diana keeps the engine running. From onboarding new agents to managing carrier relationships, she's the force that makes sure nothing falls through the cracks.</p>
       </div>
-      <div class="spotlight-card">
-        <h3>Shady Abdeljaer</h3>
-        <div class="role">$100K Diamond Ring Earner &bull; Senior Manager</div>
-        <p>Shady came in hungry and hasn&rsquo;t stopped. After earning his $100K Diamond Ring and getting promoted to Senior Manager, he continues to lead by example &mdash; closing deals, mentoring new agents, and proving what&rsquo;s possible when you combine talent with relentless work ethic.</p>
+      <div class="spotlight-card reveal">
+        <div class="spotlight-type">Top Producer</div>
+        <h3 class="spotlight-name">Shady Abdeljaer</h3>
+        <div class="spotlight-title">$100K Diamond Ring Earner &bull; Senior Manager</div>
+        <p class="spotlight-bio">Shady came in hungry and hasn't stopped. After earning his $100K Diamond Ring and getting promoted to Senior Manager, he's proof that the system works when you do.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- NLG TRAINING -->
-<section class="content-section alt">
-  <div class="container">
-    <div style="max-width:640px; margin:0 auto; text-align:center;">
-      <div class="label">Upcoming Training</div>
-      <h2 class="editorial" style="font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3vw,2.5rem); font-weight:900; color:var(--text); line-height:1.15; margin:12px 0 20px;">NLG 403(b)/457(b) <span style="color:var(--gold); font-style:italic;">Certification Training</span></h2>
-      <p style="font-size:0.95rem; color:var(--text-soft); line-height:1.8; margin-bottom:32px;">Expand your portfolio with employer-sponsored retirement plan sales. This certification opens up a massive market &mdash; teachers, government employees, and nonprofit workers all need this.</p>
-      <a href="#" class="btn btn-primary" style="font-size:0.88rem; padding:14px 32px;">Register for Training</a>
-    </div>
+<!-- TRAINING CTA -->
+<section class="training">
+  <div class="training-inner reveal">
+    <div class="section-label">Upcoming Training</div>
+    <h2 class="training-title">NLG 403(b)/457(b) <span class="accent">Certification Training</span></h2>
+    <p class="training-desc">Expand your portfolio with employer-sponsored retirement plan sales. This certification opens up a massive market &mdash; teachers, government employees, and nonprofit workers all need this.</p>
+    <a href="#" class="btn-fire">Register for Training &rarr;</a>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <div class="container">
-    <div class="footer-top">
+  <div class="footer-inner">
+    <div>
       <div class="footer-brand">
-        <div class="fb-logo"><div class="fb-mark">Pwr</div><span class="fb-name">Power <em>Financial</em></span></div>
-        <p>Empowering individuals and families with strategic financial guidance and wealth management solutions. Independently owned and operated since 2020.</p>
-        <p class="footer-disclaimer">Power Financial is an independent insurance agency. Products and services vary by state. Insurance products are not bank deposits or FDIC insured.</p>
+        <div class="footer-brand-box">Pwr</div>
+        <div class="footer-brand-text">Power <span>Financial</span></div>
       </div>
-      <div class="fc">
-        <h4>Services</h4>
-        <ul>
-          <li><a href="index.html#services">Tax-Free Retirement</a></li>
-          <li><a href="index.html#services">Life Insurance</a></li>
-          <li><a href="index.html#services">Asset Protection</a></li>
-          <li><a href="index.html#services">Medicare Planning</a></li>
-          <li><a href="index.html#services">Wills &amp; Trusts</a></li>
-        </ul>
-      </div>
-      <div class="fc">
-        <h4>Company</h4>
-        <ul>
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="index.html#team">Meet the Team</a></li>
-          <li><a href="index.html#guide-faq">Resources</a></li>
-          <li><a href="index.html#testimonials">Client Reviews</a></li>
-          <li><a href="index.html#cta">Book a Call</a></li>
-        </ul>
-      </div>
-      <div class="fc">
-        <h4>Contact</h4>
-        <div class="fc-contact">
-          <div class="ci"><div class="ci-dot"></div><div class="ci-val"><a href="mailto:operations@powerfinancial.co">operations@powerfinancial.co</a></div></div>
-          <div class="ci"><div class="ci-dot"></div><div class="ci-val">Serving clients nationwide</div></div>
-          <div class="ci"><div class="ci-dot"></div><div class="ci-val">Mon&ndash;Fri 9am&ndash;6pm<br/>Weekends by appointment</div></div>
-        </div>
-      </div>
+      <p class="footer-desc">Empowering individuals and families with strategic financial guidance and wealth management solutions.</p>
+      <p class="footer-desc" style="font-size:0.78rem; opacity:0.7;">Power Financial is an independent insurance agency. Products and services vary by state.</p>
     </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 Power Financial. All rights reserved.</p>
-      <div class="footer-links">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms</a>
-        <a href="#">Disclosures</a>
-      </div>
+    <div class="footer-col">
+      <h5>Services</h5>
+      <ul>
+        <li><a href="/#services">Tax-Free Retirement</a></li>
+        <li><a href="/#services">Life Insurance</a></li>
+        <li><a href="/#services">Asset Protection</a></li>
+        <li><a href="/#services">Medicare Planning</a></li>
+        <li><a href="/#services">Wills & Trusts</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="/about">About Us</a></li>
+        <li><a href="/#team">Meet the Team</a></li>
+        <li><a href="/#guide-faq">Resources</a></li>
+        <li><a href="/#testimonials">Client Reviews</a></li>
+        <li><a href="/#cta">Book a Call</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <ul>
+        <li><a href="mailto:operations@powerfinancial.co">operations@powerfinancial.co</a></li>
+        <li><span style="color:rgba(254,243,226,0.3); font-size:0.85rem;">Serving clients nationwide</span></li>
+        <li><span style="color:rgba(254,243,226,0.3); font-size:0.85rem;">Mon&ndash;Fri 9am&ndash;6pm<br>Weekends by appointment</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Power Financial. All rights reserved.</span>
+    <div>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms</a>
+      <a href="#">Disclosures</a>
     </div>
   </div>
 </footer>
 
-<script src="js/main.js"></script>
+<script>
+  // ========== SMOKE & EMBER PARTICLES ==========
+  const container = document.getElementById('particles');
+
+  function createSmoke() {
+    const smoke = document.createElement('div');
+    smoke.className = 'smoke';
+    smoke.style.left = Math.random() * 100 + '%';
+    smoke.style.animationDuration = (8 + Math.random() * 12) + 's';
+    smoke.style.animationDelay = Math.random() * 5 + 's';
+    smoke.style.width = (6 + Math.random() * 10) + 'px';
+    smoke.style.height = smoke.style.width;
+    container.appendChild(smoke);
+    setTimeout(() => smoke.remove(), 20000);
+  }
+
+  function createEmber() {
+    const ember = document.createElement('div');
+    ember.className = 'ember';
+    ember.style.left = (30 + Math.random() * 40) + '%';
+    ember.style.setProperty('--drift', (Math.random() * 100 - 50) + 'px');
+    ember.style.animationDuration = (3 + Math.random() * 5) + 's';
+    ember.style.animationDelay = Math.random() * 2 + 's';
+    const size = 2 + Math.random() * 3;
+    ember.style.width = size + 'px';
+    ember.style.height = size + 'px';
+    container.appendChild(ember);
+    setTimeout(() => ember.remove(), 10000);
+  }
+
+  setInterval(createSmoke, 400);
+  setInterval(createEmber, 600);
+
+  // Initial burst
+  for (let i = 0; i < 15; i++) setTimeout(createSmoke, i * 100);
+  for (let i = 0; i < 8; i++) setTimeout(createEmber, i * 150);
+
+  // ========== ACCORDION ==========
+  function toggleDay(card) {
+    const wasOpen = card.classList.contains('open');
+    document.querySelectorAll('.day-card').forEach(c => c.classList.remove('open'));
+    if (!wasOpen) card.classList.add('open');
+  }
+
+  // ========== SCROLL REVEALS ==========
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
 </body>
 </html>
