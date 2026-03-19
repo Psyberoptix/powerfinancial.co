@@ -1,1 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Financial Calculators — Power Financial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
+:root{
+  --gold:#C9A84C;
+  --gold-warm:#E2B85A;
+  --gold-dark:#9E7A2E;
+  --gold-dim:rgba(201,168,76,0.12);
+  --ink:#160A02;
+  --ink-soft:#2C1507;
+  --brown:#4A2810;
+  --cream:#F7F2EA;
+  --cream-warm:#EFE6D5;
+  --terracotta:#C4614A;
+  --sage:#3D6B5C;
+  --sage-dim:rgba(61,107,92,0.1);
+  --white:#FEFCF8;
+  --text:#1C0E05;
+  --text-soft:#5A3520;
+  --text-muted:#8A7A6A;
+  --red:#B84A3C;
+  --red-dim:rgba(184,74,60,0.08);
+  --green:#3D7B5C;
+  --green-dim:rgba(61,123,92,0.08);
+  --border:rgba(28,14,5,0.08);
+  --border2:rgba(28,14,5,0.12);
+  --font-display:'Playfair Display',Georgia,serif;
+  --font-body:'Inter',system-ui,sans-serif;
+}
+
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-body);background:var(--cream);color:var(--text);
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+
+/* ===== TOP BAR ===== */
+.top-bar{
+  background:var(--ink);color:rgba(255,255,255,0.6);
+  text-align:center;padding:10px 24px;
+  font-size:0.72rem;letter-spacing:0.04em;
+}
+.top-bar a{color:var(--gold);font-weight:600;margin-left:6px}
+.top-bar a:hover{color:var(--gold-warm)}
+
+/* ===== NAV ===== */
+nav{
+  position:sticky;top:0;z-index:100;
+  padding:16px 48px;display:flex;align-items:center;justify-content:space-between;
+  background:rgba(22,10,2,0.96);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.nav-logo{
+  font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:var(--white);
+}
+.nav-logo span{color:var(--gold)}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{
+  font-size:0.8rem;font-weight:500;color:rgba(255,255,255,0.55);
+  transition:color 0.3s;letter-spacing:0.01em;
+}
+.nav-links a:hover{color:var(--white)}
+.nav-links a.active{color:var(--gold)}
+.nav-cta{
+  padding:9px 22px;background:var(--gold);color:var(--ink)!important;
+  border-radius:6px;font-weight:600;font-size:0.8rem;
+  transition:all 0.3s;
+}
+.nav-cta:hover{background:var(--gold-warm);transform:translateY(-1px)}
+
+/* ===== PAGE HEADER ===== */
+.page-header{
+  padding:80px 48px 64px;text-align:center;
+  background:var(--white);border-bottom:1px solid var(--border);
+}
+.header-eyebrow{
+  font-size:0.7rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--gold-dark);margin-bottom:16px;
+}
+.header-title{
+  font-family:var(--font-display);font-size:clamp(2rem,4.5vw,3.2rem);
+  font-weight:800;line-height:1.1;letter-spacing:-0.01em;color:var(--ink);
+  margin-bottom:16px;
+}
+.header-title em{color:var(--terracotta);font-style:italic;font-weight:700}
+.header-sub{
+  font-size:1rem;line-height:1.7;color:var(--text-soft);max-width:520px;
+  margin:0 auto;font-weight:400;
+}
+
+/* ===== CALCULATOR TABS ===== */
+.tabs{
+  display:flex;justify-content:center;gap:6px;padding:0 48px;
+  background:var(--white);padding-bottom:32px;
+}
+.tab-btn{
+  padding:11px 28px;font-family:var(--font-body);font-size:0.82rem;font-weight:600;
+  border:1px solid var(--border2);border-radius:6px;
+  background:var(--white);color:var(--text-soft);cursor:pointer;
+  transition:all 0.25s;
+}
+.tab-btn:hover{border-color:var(--gold);color:var(--gold-dark)}
+.tab-btn.active{background:var(--ink);color:var(--gold);border-color:var(--ink)}
+
+/* ===== PANELS ===== */
+.calc-panel{display:none;padding:60px 48px 80px;max-width:1200px;margin:0 auto}
+.calc-panel.active{display:block}
+
+/* ===== SHARED ===== */
+.calc-eyebrow{
+  font-size:0.68rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--gold-dark);margin-bottom:14px;display:flex;align-items:center;gap:10px;
+}
+.calc-eyebrow::before{content:'';width:20px;height:1.5px;background:var(--gold)}
+.calc-heading{
+  font-family:var(--font-display);font-size:clamp(1.6rem,3vw,2.2rem);
+  font-weight:800;line-height:1.1;margin-bottom:10px;color:var(--ink);
+}
+.calc-desc{
+  font-size:0.95rem;line-height:1.7;color:var(--text-soft);max-width:540px;
+  margin-bottom:44px;
+}
+
+/* Inputs */
+.input-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:24px;margin-bottom:48px;
+  padding:32px;background:var(--white);border:1px solid var(--border);border-radius:12px;
+}
+.input-field{}
+.input-field label{
+  display:block;font-size:0.68rem;font-weight:600;
+  letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);
+  margin-bottom:10px;
+}
+.input-field input[type="range"]{
+  width:100%;-webkit-appearance:none;appearance:none;
+  height:5px;background:var(--cream-warm);border-radius:3px;outline:none;margin-bottom:6px;
+}
+.input-field input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:var(--gold);cursor:pointer;border:3px solid var(--white);
+  box-shadow:0 2px 8px rgba(201,168,76,0.3);transition:box-shadow 0.2s;
+}
+.input-field input[type="range"]::-webkit-slider-thumb:hover{
+  box-shadow:0 2px 14px rgba(201,168,76,0.5);
+}
+.range-info{display:flex;justify-content:space-between;align-items:baseline}
+.range-val{font-size:1rem;font-weight:700;color:var(--ink)}
+.range-max{font-size:0.68rem;color:var(--text-muted);font-weight:500}
+
+/* =========================================
+   CALC 1: 401(k) vs IUL
+   ========================================= */
+.vs-results{
+  display:grid;grid-template-columns:1fr 48px 1fr;gap:0;margin-bottom:40px;
+}
+.vs-card{
+  padding:36px;border-radius:12px;border:1px solid var(--border);
+  background:var(--white);position:relative;overflow:hidden;
+}
+.vs-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.vs-card.k401::before{background:var(--terracotta)}
+.vs-card.iul::before{background:var(--sage)}
+.vs-divider{
+  display:flex;align-items:center;justify-content:center;
+}
+.vs-divider span{
+  font-family:var(--font-display);font-size:0.85rem;font-weight:700;
+  color:var(--text-muted);writing-mode:vertical-rl;letter-spacing:0.08em;
+}
+.vs-badge{
+  display:inline-block;font-size:0.62rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  padding:5px 12px;border-radius:4px;margin-bottom:18px;
+}
+.k401 .vs-badge{background:var(--red-dim);color:var(--terracotta)}
+.iul .vs-badge{background:var(--sage-dim);color:var(--sage)}
+.vs-total-label{
+  font-size:0.68rem;font-weight:600;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;
+}
+.vs-total{
+  font-family:var(--font-display);font-size:clamp(1.8rem,3.5vw,2.8rem);
+  font-weight:800;line-height:1;margin-bottom:6px;color:var(--ink);
+}
+.iul .vs-total{color:var(--sage)}
+.vs-sub{font-size:0.8rem;color:var(--text-muted);margin-bottom:24px}
+.vs-rows{display:flex;flex-direction:column;gap:10px}
+.vs-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-bottom:10px;border-bottom:1px solid var(--border);
+  font-size:0.88rem;
+}
+.vs-row:last-child{border:none;padding:0}
+.vs-row-label{color:var(--text-soft)}
+.vs-row-val{font-weight:600;color:var(--ink)}
+
+/* Asterisk reference */
+.asterisk{
+  font-size:0.7em;vertical-align:super;color:var(--gold-dark);
+  cursor:help;font-weight:700;
+}
+
+/* Advantage bar */
+.advantage-bar{
+  padding:28px 36px;border-radius:12px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;
+  margin-bottom:48px;
+}
+.advantage-bar.positive{background:var(--sage-dim);border:1px solid rgba(61,107,92,0.15)}
+.advantage-bar.negative{background:var(--red-dim);border:1px solid rgba(184,74,60,0.15)}
+.adv-text{font-size:0.95rem;font-weight:700}
+.advantage-bar.positive .adv-text{color:var(--sage)}
+.advantage-bar.negative .adv-text{color:var(--terracotta)}
+.adv-detail{font-size:0.8rem;color:var(--text-soft);margin-top:2px}
+.adv-num{font-family:var(--font-display);font-size:clamp(1.4rem,2.5vw,2rem);font-weight:800}
+.advantage-bar.positive .adv-num{color:var(--sage)}
+.advantage-bar.negative .adv-num{color:var(--terracotta)}
+.adv-monthly{font-size:0.78rem;color:var(--text-soft);text-align:right;margin-top:2px}
+
+/* Chart */
+.chart-section{margin-bottom:48px}
+.chart-title{font-family:var(--font-display);font-size:1.1rem;font-weight:700;margin-bottom:16px}
+.chart-wrap{
+  width:100%;height:300px;background:var(--white);
+  border:1px solid var(--border);border-radius:12px;padding:20px;
+  position:relative;
+}
+.chart-legend{
+  display:flex;gap:24px;margin-top:14px;
+}
+.chart-legend-item{display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--text-soft)}
+.chart-legend-dot{width:10px;height:3px;border-radius:2px}
+
+/* =========================================
+   CALC 2: FEE EROSION
+   ========================================= */
+.fee-results{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px;
+}
+.fee-card{
+  padding:28px;border-radius:12px;border:1px solid var(--border);
+  background:var(--white);text-align:center;position:relative;overflow:hidden;
+}
+.fee-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--terracotta)}
+.fee-card.total::before{background:linear-gradient(90deg,var(--terracotta),var(--gold))}
+.fee-card-label{
+  font-size:0.68rem;font-weight:600;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;
+}
+.fee-card-num{
+  font-family:var(--font-display);font-size:clamp(1.6rem,2.5vw,2.2rem);
+  font-weight:800;color:var(--terracotta);line-height:1;margin-bottom:4px;
+}
+.fee-card.total .fee-card-num{color:var(--ink)}
+.fee-card-sub{font-size:0.72rem;color:var(--text-muted)}
+
+.fee-table-wrap{margin-bottom:40px;overflow-x:auto}
+.fee-timeline-title{font-family:var(--font-display);font-size:1.1rem;font-weight:700;margin-bottom:16px}
+table.fee-table{width:100%;border-collapse:collapse}
+.fee-table th{
+  font-size:0.66rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--text-muted);padding:12px 14px;text-align:left;
+  border-bottom:2px solid var(--border2);
+}
+.fee-table th:not(:first-child){text-align:right}
+.fee-table td{
+  font-size:0.88rem;padding:12px 14px;border-bottom:1px solid var(--border);
+  color:var(--text-soft);
+}
+.fee-table td:not(:first-child){text-align:right;font-weight:600}
+.fee-table td.year-cell{font-weight:700;color:var(--ink)}
+.fee-table td.loss{color:var(--terracotta)}
+.fee-table td.opp{color:var(--gold-dark);font-weight:700}
+.fee-table tr:hover td{background:rgba(201,168,76,0.04)}
+
+.opp-bar{
+  padding:28px 36px;border-radius:12px;margin-bottom:48px;
+  background:var(--gold-dim);border:1px solid rgba(201,168,76,0.18);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;
+}
+.opp-text{font-size:0.95rem;font-weight:700;color:var(--gold-dark)}
+.opp-detail{font-size:0.8rem;color:var(--text-soft);margin-top:2px}
+.opp-num{font-family:var(--font-display);font-size:clamp(1.4rem,2.5vw,2rem);font-weight:800;color:var(--gold-dark)}
+
+/* ===== COMING SOON GRID ===== */
+.coming-soon{
+  margin-top:80px;padding-top:60px;border-top:1px solid var(--border);
+}
+.coming-soon-title{
+  font-family:var(--font-display);font-size:1.4rem;font-weight:700;margin-bottom:8px;
+}
+.coming-soon-sub{font-size:0.9rem;color:var(--text-soft);margin-bottom:32px}
+.soon-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.soon-card{
+  padding:28px;border:1px dashed var(--border2);border-radius:12px;
+  background:var(--white);opacity:0.7;
+}
+.soon-card-title{font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:6px}
+.soon-card-desc{font-size:0.82rem;color:var(--text-muted);line-height:1.6}
+.soon-badge{
+  display:inline-block;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;
+  text-transform:uppercase;padding:3px 10px;border-radius:3px;
+  background:var(--gold-dim);color:var(--gold-dark);margin-bottom:12px;
+}
+
+/* ===== CTA BANNER ===== */
+.cta-banner{
+  margin-top:80px;padding:56px;border-radius:16px;text-align:center;
+  background:var(--ink);color:var(--white);position:relative;overflow:hidden;
+}
+.cta-banner::before{
+  content:'';position:absolute;top:-50%;right:-20%;width:400px;height:400px;
+  border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.08),transparent 70%);
+}
+.cta-banner-title{
+  font-family:var(--font-display);font-size:clamp(1.6rem,3vw,2.2rem);
+  font-weight:800;margin-bottom:10px;position:relative;
+}
+.cta-banner-title em{color:var(--gold);font-style:italic}
+.cta-banner-sub{
+  font-size:0.95rem;color:rgba(255,255,255,0.6);max-width:440px;
+  margin:0 auto 28px;position:relative;
+}
+.cta-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:14px 36px;background:var(--gold);color:var(--ink);
+  font-family:var(--font-body);font-size:0.85rem;font-weight:700;
+  border:none;border-radius:6px;cursor:pointer;transition:all 0.3s;
+  position:relative;
+}
+.cta-btn:hover{background:var(--gold-warm);transform:translateY(-2px);box-shadow:0 6px 24px rgba(201,168,76,0.25)}
+
+/* ===== DISCLAIMER FOOTER ===== */
+.disclaimer-section{
+  margin-top:80px;padding:40px 0;border-top:1px solid var(--border);
+}
+.disclaimer-title{
+  font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--text-muted);margin-bottom:16px;
+}
+.disclaimer-text{
+  font-size:0.75rem;line-height:1.8;color:var(--text-muted);
+}
+.disclaimer-text p{margin-bottom:12px}
+.disclaimer-text sup{font-size:0.65em;font-weight:700;color:var(--gold-dark)}
+
+/* ===== FOOTER ===== */
+footer{
+  padding:60px 48px 32px;background:var(--ink);color:rgba(255,255,255,0.5);
+  margin-top:0;
+}
+.footer-top{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;
+  margin-bottom:48px;
+}
+.footer-logo{
+  font-family:var(--font-display);font-size:1.4rem;font-weight:700;
+  color:var(--white);margin-bottom:12px;
+}
+.footer-logo span{color:var(--gold)}
+.footer-tagline{font-size:0.82rem;line-height:1.7;max-width:280px}
+.footer-legal-text{
+  font-size:0.7rem;line-height:1.7;margin-top:16px;
+  color:rgba(255,255,255,0.3);
+}
+.footer-col-title{
+  font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;
+  color:rgba(255,255,255,0.3);margin-bottom:16px;
+}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.footer-col a{font-size:0.82rem;transition:color 0.3s}
+.footer-col a:hover{color:var(--gold)}
+.footer-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:24px;border-top:1px solid rgba(255,255,255,0.06);
+  font-size:0.72rem;
+}
+.footer-bottom-links{display:flex;gap:20px}
+.footer-bottom-links a{transition:color 0.3s}
+.footer-bottom-links a:hover{color:var(--gold)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1024px){
+  .vs-results{grid-template-columns:1fr;gap:16px}
+  .vs-divider{display:none}
+  .fee-results{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr 1fr;gap:32px}
+}
+@media(max-width:640px){
+  .page-header,.calc-panel{padding-left:24px;padding-right:24px}
+  nav{padding:12px 20px}
+  .nav-links a:not(.nav-cta){display:none}
+  .tabs{padding:0 24px;flex-wrap:wrap;gap:6px}
+  .tab-btn{padding:9px 18px;font-size:0.75rem}
+  .input-grid{padding:20px;gap:20px}
+  .vs-card{padding:24px}
+  .advantage-bar,.opp-bar{flex-direction:column;align-items:flex-start}
+  .cta-banner{padding:36px 24px}
+  .footer-top{grid-template-columns:1fr}
+  .fee-table th,.fee-table td{padding:8px 6px;font-size:0.78rem}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  Limited consultations available this month.<a href="/#cta">Book your free call →</a>
+</div>
+
+<!-- NAV (mirrors current site) -->
+<nav>
+  <a href="/" class="nav-logo"><span>Pwr</span> Financial</a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+    <a href="/#services">Services</a>
+    <a href="/calculators" class="active">Calculators</a>
+    <a href="/#cta" class="nav-cta">Book a Free Call</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="header-eyebrow">Interactive Tools</div>
+  <h1 class="header-title">Run the numbers.<br>See the <em>real</em> difference.</h1>
+  <p class="header-sub">Three calculators that show what traditional financial planning is actually costing you — and what the alternative looks like.</p>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('iul',this)">401(k) vs IUL</button>
+  <button class="tab-btn" onclick="switchTab('fees',this)">Fee Erosion</button>
+  <button class="tab-btn" onclick="switchTab('life',this)">Life Insurance Needs</button>
+</div>
+
+<!-- ======================================== -->
+<!-- PANEL 1: 401(k) vs IUL                   -->
+<!-- ======================================== -->
+<div class="calc-panel active" id="panel-iul">
+<div>
+
+  <div class="calc-eyebrow">Comparison Calculator</div>
+  <h2 class="calc-heading">Traditional 401(k) vs Indexed Universal Life<span class="asterisk" title="See disclaimer">*</span></h2>
+  <p class="calc-desc">Same money, two different vehicles. One gets taxed on the way out. The other doesn't — and it can never go below zero in a down market.<span class="asterisk" title="See disclaimer">†</span></p>
+
+  <!-- Carrier & Strategy Selection -->
+  <div class="input-grid" style="margin-bottom:16px">
+    <div class="input-field">
+      <label>Carrier</label>
+      <select id="iulCarrier" style="width:100%;padding:12px 14px;background:var(--cream);border:1px solid var(--border2);border-radius:8px;font-family:var(--font-body);font-size:0.9rem;color:var(--text);cursor:pointer;-webkit-appearance:none;outline:none">
+        <option value="allianz">Allianz Life Accumulator</option>
+        <option value="fg">F&G Pathsetter</option>
+      </select>
+    </div>
+    <div class="input-field">
+      <label>Risk Profile</label>
+      <select id="iulRisk" style="width:100%;padding:12px 14px;background:var(--cream);border:1px solid var(--border2);border-radius:8px;font-family:var(--font-body);font-size:0.9rem;color:var(--text);cursor:pointer;-webkit-appearance:none;outline:none">
+        <option value="conservative">Conservative</option>
+        <option value="moderate" selected>Moderate</option>
+        <option value="aggressive">Aggressive</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Strategy Info Badge -->
+  <div id="strategyInfo" style="padding:14px 20px;background:var(--sage-dim);border:1px solid rgba(61,107,92,0.12);border-radius:8px;margin-bottom:28px;font-size:0.8rem;line-height:1.6;color:var(--text-soft)">
+    <strong id="strategyName" style="color:var(--sage)">S&P 500® Annual Point-to-Point</strong><span class="asterisk">‡</span><br>
+    <span id="strategyDetails">100% Participation · 12.25% Cap · 0% Floor · Historical Avg: 8.16–8.61%</span>
+  </div>
+
+  <!-- Inputs -->
+  <div class="input-grid">
+    <div class="input-field">
+      <label>Your Current Age</label>
+      <input type="range" id="iulAge" min="25" max="55" value="35">
+      <div class="range-info"><span class="range-val" id="iulAgeVal">35</span><span class="range-max">55</span></div>
+    </div>
+    <div class="input-field">
+      <label>Monthly Contribution</label>
+      <input type="range" id="iulContrib" min="200" max="3000" value="500" step="50">
+      <div class="range-info"><span class="range-val" id="iulContribVal">$500</span><span class="range-max">$3,000</span></div>
+    </div>
+    <div class="input-field">
+      <label>Retirement Age</label>
+      <input type="range" id="iulRetire" min="55" max="70" value="65">
+      <div class="range-info"><span class="range-val" id="iulRetireVal">65</span><span class="range-max">70</span></div>
+    </div>
+    <div class="input-field">
+      <label>Tax Bracket at Retirement</label>
+      <input type="range" id="iulTax" min="12" max="37" value="22" step="1">
+      <div class="range-info"><span class="range-val" id="iulTaxVal">22%</span><span class="range-max">37%</span></div>
+    </div>
+  </div>
+
+  <!-- Side by side -->
+  <div class="vs-results">
+    <div class="vs-card k401">
+      <div class="vs-badge">Traditional 401(k)</div>
+      <div class="vs-total-label">Account Value at Retirement</div>
+      <div class="vs-total" id="k401Total">$0</div>
+      <div class="vs-sub">Before taxes on withdrawal</div>
+      <div class="vs-rows">
+        <div class="vs-row"><span class="vs-row-label">Total Contributions</span><span class="vs-row-val" id="k401Contrib">$0</span></div>
+        <div class="vs-row"><span class="vs-row-label">Market Growth</span><span class="vs-row-val" id="k401Growth">$0</span></div>
+        <div class="vs-row"><span class="vs-row-label">Federal Taxes at Withdrawal<span class="asterisk">**</span></span><span class="vs-row-val" id="k401Taxes" style="color:var(--terracotta)">-$0</span></div>
+        <div class="vs-row"><span class="vs-row-label">Est. State Taxes (if applicable)<span class="asterisk">††</span></span><span class="vs-row-val" id="k401StateTax" style="color:var(--terracotta)">-$0</span></div>
+        <div class="vs-row"><span class="vs-row-label">After-Tax Value</span><span class="vs-row-val" id="k401AfterTax">$0</span></div>
+        <div class="vs-row"><span class="vs-row-label">Monthly Income (4% rule)</span><span class="vs-row-val" id="k401Monthly">$0</span></div>
+      </div>
+      <!-- 401(k) Warning Callouts -->
+      <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
+        <div style="padding:10px 14px;background:var(--red-dim);border-radius:6px;font-size:0.75rem;line-height:1.5;color:var(--terracotta)">
+          <strong>Early Withdrawal Penalty:</strong> Withdraw before 59½ and you pay an additional 10% federal penalty — on top of income taxes. That money lands in your bank account and pushes you into a higher tax bracket.<span class="asterisk">‡‡</span>
+        </div>
+        <div style="padding:10px 14px;background:var(--red-dim);border-radius:6px;font-size:0.75rem;line-height:1.5;color:var(--terracotta)">
+          <strong>Required Minimum Distributions (Age 73):</strong> At 73, the IRS forces you to withdraw — whether you need the money or not. These mandatory distributions are taxed as ordinary income and can push you into a higher bracket.<span class="asterisk">§§</span>
+        </div>
+        <div style="padding:10px 14px;background:var(--red-dim);border-radius:6px;font-size:0.75rem;line-height:1.5;color:var(--terracotta)">
+          <strong>Tax Bracket Risk:</strong> Every dollar withdrawn counts as ordinary income. Large withdrawals — or RMDs combined with Social Security — can push you into a higher federal bracket, meaning you keep less of what you saved.
+        </div>
+      </div>
+    </div>
+    <div class="vs-divider"><span>VS</span></div>
+    <div class="vs-card iul">
+      <div class="vs-badge">Indexed Universal Life</div>
+      <div class="vs-total-label">Cash Value at Retirement</div>
+      <div class="vs-total" id="iulTotal">$0</div>
+      <div class="vs-sub">Tax-free via policy loans<span class="asterisk" title="See disclaimer">§</span></div>
+      <div class="vs-rows">
+        <div class="vs-row"><span class="vs-row-label">Total Premiums Paid</span><span class="vs-row-val" id="iulPremiums">$0</span></div>
+        <div class="vs-row"><span class="vs-row-label">Cash Value Growth</span><span class="vs-row-val" id="iulGrowth" style="color:var(--sage)">$0</span></div>
+        <div class="vs-row"><span class="vs-row-label">Est. Policy Costs Deducted<span class="asterisk">‖</span></span><span class="vs-row-val" id="iulCosts">-$0</span></div>
+        <div class="vs-row"><span class="vs-row-label">Federal Taxes Owed</span><span class="vs-row-val" style="color:var(--sage)">$0 (tax-free)</span></div>
+        <div class="vs-row"><span class="vs-row-label">State Taxes Owed</span><span class="vs-row-val" style="color:var(--sage)">$0 (tax-free)</span></div>
+        <div class="vs-row"><span class="vs-row-label">Monthly Income (policy loans)</span><span class="vs-row-val" id="iulMonthly" style="color:var(--sage)">$0</span></div>
+        <div class="vs-row"><span class="vs-row-label">Est. Death Benefit<span class="asterisk">‖‖</span></span><span class="vs-row-val" id="iulDeath" style="color:var(--sage)">$0</span></div>
+      </div>
+      <!-- IUL Advantage Callouts -->
+      <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
+        <div style="padding:10px 14px;background:var(--sage-dim);border-radius:6px;font-size:0.75rem;line-height:1.5;color:var(--sage)">
+          <strong>No Early Withdrawal Penalty.</strong> Access your cash value at any time through policy loans — no age restrictions, no 10% penalty, no taxable event.<span class="asterisk">§</span>
+        </div>
+        <div style="padding:10px 14px;background:var(--sage-dim);border-radius:6px;font-size:0.75rem;line-height:1.5;color:var(--sage)">
+          <strong>No Required Minimum Distributions.</strong> There are no mandatory withdrawals at any age. You decide when and how much to access — on your terms, not the IRS's.
+        </div>
+        <div style="padding:10px 14px;background:var(--sage-dim);border-radius:6px;font-size:0.75rem;line-height:1.5;color:var(--sage)">
+          <strong>No Tax Bracket Impact.</strong> Policy loan income doesn't count as taxable income — it won't push you into a higher bracket or increase taxes on your Social Security.
+        </div>
+        <div style="padding:10px 14px;background:var(--sage-dim);border-radius:6px;font-size:0.75rem;line-height:1.5;color:var(--sage)">
+          <strong>Tax-Free Death Benefit.</strong> Your beneficiaries receive a tax-free death benefit — providing financial protection for your family in addition to your retirement income.<span class="asterisk">‖‖</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advantage -->
+  <div class="advantage-bar positive" id="advBar">
+    <div>
+      <div class="adv-text" id="advText">IUL Advantage</div>
+      <div class="adv-detail">More retirement income — tax-free, no RMDs, no penalties, plus a death benefit<span class="asterisk">†</span></div>
+    </div>
+    <div style="text-align:right">
+      <div class="adv-num" id="advAmount">+$0</div>
+      <div class="adv-monthly" id="advMonthly">+$0/mo more income</div>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="chart-section">
+    <div class="chart-title">Year-by-Year Growth Comparison</div>
+    <div class="chart-wrap"><canvas id="growthChart"></canvas></div>
+    <div class="chart-legend">
+      <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--terracotta)"></div>401(k) — full market exposure, taxed at withdrawal</div>
+      <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--sage)"></div>IUL — capped upside, 0% floor, tax-free income</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ======================================== -->
+<!-- PANEL 2: FEE EROSION                      -->
+<!-- ======================================== -->
+<div class="calc-panel" id="panel-fees">
+<div>
+
+  <div class="calc-eyebrow">Fee Erosion Calculator</div>
+  <h2 class="calc-heading">The hidden cost of "professional" advice.<span class="asterisk">*</span></h2>
+  <p class="calc-desc">CPA fees, advisor AUM fees, fund expense ratios — they seem small. But compounded over decades, they quietly eat your retirement.</p>
+
+  <div class="input-grid">
+    <div class="input-field">
+      <label>Portfolio Value</label>
+      <input type="range" id="feePortfolio" min="50000" max="2000000" value="250000" step="10000">
+      <div class="range-info"><span class="range-val" id="feePortfolioVal">$250,000</span><span class="range-max">$2M</span></div>
+    </div>
+    <div class="input-field">
+      <label>Annual CPA Cost</label>
+      <input type="range" id="feeCPA" min="500" max="10000" value="2500" step="100">
+      <div class="range-info"><span class="range-val" id="feeCPAVal">$2,500</span><span class="range-max">$10,000</span></div>
+    </div>
+    <div class="input-field">
+      <label>Financial Advisor Fee (% AUM)</label>
+      <input type="range" id="feeAdvisor" min="0.25" max="2" value="1" step="0.05">
+      <div class="range-info"><span class="range-val" id="feeAdvisorVal">1.00%</span><span class="range-max">2%</span></div>
+    </div>
+    <div class="input-field">
+      <label>Fund Expense Ratio</label>
+      <input type="range" id="feeExpense" min="0.03" max="1.5" value="0.5" step="0.01">
+      <div class="range-info"><span class="range-val" id="feeExpenseVal">0.50%</span><span class="range-max">1.5%</span></div>
+    </div>
+    <div class="input-field">
+      <label>Expected Annual Return</label>
+      <input type="range" id="feeReturn" min="4" max="10" value="7" step="0.5">
+      <div class="range-info"><span class="range-val" id="feeReturnVal">7%</span><span class="range-max">10%</span></div>
+    </div>
+    <div class="input-field">
+      <label>Time Horizon (Years)</label>
+      <input type="range" id="feeYears" min="5" max="40" value="25" step="1">
+      <div class="range-info"><span class="range-val" id="feeYearsVal">25 years</span><span class="range-max">40</span></div>
+    </div>
+  </div>
+
+  <div class="fee-results">
+    <div class="fee-card">
+      <div class="fee-card-label">Total CPA Fees Paid</div>
+      <div class="fee-card-num" id="feeCPATotal">$0</div>
+      <div class="fee-card-sub" id="feeCPASub">over 25 years</div>
+    </div>
+    <div class="fee-card">
+      <div class="fee-card-label">Total Advisor + Fund Fees</div>
+      <div class="fee-card-num" id="feeAdvisorTotal">$0</div>
+      <div class="fee-card-sub">advisor + fund expense fees</div>
+    </div>
+    <div class="fee-card total">
+      <div class="fee-card-label">Total Wealth Lost to Fees</div>
+      <div class="fee-card-num" id="feeTotalLost">$0</div>
+      <div class="fee-card-sub">fees paid + lost compound growth</div>
+    </div>
+  </div>
+
+  <div class="fee-table-wrap">
+    <div class="fee-timeline-title">Fee Impact Over Time</div>
+    <table class="fee-table">
+      <thead><tr>
+        <th>Year</th><th>Portfolio (No Fees)</th><th>Portfolio (After Fees)</th><th>Cumulative Fees</th><th>Lost Growth</th>
+      </tr></thead>
+      <tbody id="feeTableBody"></tbody>
+    </table>
+  </div>
+
+  <div class="opp-bar">
+    <div>
+      <div class="opp-text">That money could have been yours.</div>
+      <div class="opp-detail">If those fees were invested instead, this is what you'd have</div>
+    </div>
+    <div style="text-align:right">
+      <div class="opp-num" id="oppAmount">$0</div>
+      <div style="font-size:0.78rem;color:var(--text-soft);margin-top:2px" id="oppDetail">in lost retirement wealth</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ======================================== -->
+<!-- PANEL 3: LIFE INSURANCE NEEDS            -->
+<!-- ======================================== -->
+<div class="calc-panel" id="panel-life">
+<div>
+
+  <div class="calc-eyebrow">Coverage Calculator</div>
+  <h2 class="calc-heading">How much life insurance does your family actually need?<span class="asterisk">*</span></h2>
+  <p class="calc-desc">Most families are either uninsured or dangerously underinsured. This calculator shows the gap between what you have and what your family would need if something happened tomorrow.</p>
+
+  <!-- Income & Family -->
+  <div class="input-grid">
+    <div class="input-field">
+      <label>Annual Household Income</label>
+      <input type="range" id="lifeIncome" min="30000" max="500000" value="75000" step="5000">
+      <div class="range-info"><span class="range-val" id="lifeIncomeVal">$75,000</span><span class="range-max">$500k</span></div>
+    </div>
+    <div class="input-field">
+      <label>Years of Income to Replace</label>
+      <input type="range" id="lifeYears" min="5" max="30" value="10" step="1">
+      <div class="range-info"><span class="range-val" id="lifeYearsVal">10 years</span><span class="range-max">30</span></div>
+    </div>
+    <div class="input-field">
+      <label>Number of Dependents</label>
+      <input type="range" id="lifeDependents" min="0" max="8" value="2" step="1">
+      <div class="range-info"><span class="range-val" id="lifeDependentsVal">2</span><span class="range-max">8</span></div>
+    </div>
+    <div class="input-field">
+      <label>Youngest Dependent's Age</label>
+      <input type="range" id="lifeChildAge" min="0" max="17" value="5" step="1">
+      <div class="range-info"><span class="range-val" id="lifeChildAgeVal">5</span><span class="range-max">17</span></div>
+    </div>
+  </div>
+
+  <!-- Debts & Obligations -->
+  <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-dark);margin-bottom:12px;display:flex;align-items:center;gap:8px"><span style="width:20px;height:1.5px;background:var(--gold);display:inline-block"></span>Debts & Obligations</div>
+  <div class="input-grid" style="margin-bottom:28px">
+    <div class="input-field">
+      <label>Mortgage Balance</label>
+      <input type="range" id="lifeMortgage" min="0" max="1000000" value="250000" step="10000">
+      <div class="range-info"><span class="range-val" id="lifeMortgageVal">$250,000</span><span class="range-max">$1M</span></div>
+    </div>
+    <div class="input-field">
+      <label>Other Debts (Auto, Student, Credit)</label>
+      <input type="range" id="lifeDebts" min="0" max="200000" value="25000" step="5000">
+      <div class="range-info"><span class="range-val" id="lifeDebtsVal">$25,000</span><span class="range-max">$200k</span></div>
+    </div>
+    <div class="input-field">
+      <label>College Fund per Child</label>
+      <input type="range" id="lifeCollege" min="0" max="150000" value="50000" step="5000">
+      <div class="range-info"><span class="range-val" id="lifeCollegeVal">$50,000</span><span class="range-max">$150k</span></div>
+    </div>
+    <div class="input-field">
+      <label>Final Expenses (Funeral, Medical, Legal)</label>
+      <input type="range" id="lifeFinal" min="5000" max="50000" value="15000" step="1000">
+      <div class="range-info"><span class="range-val" id="lifeFinalVal">$15,000</span><span class="range-max">$50k</span></div>
+    </div>
+  </div>
+
+  <!-- Existing Coverage -->
+  <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-dark);margin-bottom:12px;display:flex;align-items:center;gap:8px"><span style="width:20px;height:1.5px;background:var(--gold);display:inline-block"></span>What You Already Have</div>
+  <div class="input-grid" style="margin-bottom:48px">
+    <div class="input-field">
+      <label>Existing Life Insurance Coverage</label>
+      <input type="range" id="lifeExisting" min="0" max="2000000" value="100000" step="25000">
+      <div class="range-info"><span class="range-val" id="lifeExistingVal">$100,000</span><span class="range-max">$2M</span></div>
+    </div>
+    <div class="input-field">
+      <label>Liquid Savings & Investments</label>
+      <input type="range" id="lifeSavings" min="0" max="500000" value="20000" step="5000">
+      <div class="range-info"><span class="range-val" id="lifeSavingsVal">$20,000</span><span class="range-max">$500k</span></div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:40px">
+
+    <!-- Total Need -->
+    <div style="padding:36px;border-radius:12px;border:1px solid var(--border);background:var(--white);position:relative;overflow:hidden">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--ink)"></div>
+      <div style="font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px">Total Coverage Your Family Needs</div>
+      <div style="font-family:var(--font-display);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;color:var(--ink);line-height:1;margin-bottom:20px" id="lifeTotalNeed">$0</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="vs-row"><span class="vs-row-label">Income Replacement</span><span class="vs-row-val" id="lifeNeedIncome">$0</span></div>
+        <div class="vs-row"><span class="vs-row-label">Mortgage Payoff</span><span class="vs-row-val" id="lifeNeedMortgage">$0</span></div>
+        <div class="vs-row"><span class="vs-row-label">Other Debts</span><span class="vs-row-val" id="lifeNeedDebts">$0</span></div>
+        <div class="vs-row"><span class="vs-row-label">Children's Education</span><span class="vs-row-val" id="lifeNeedCollege">$0</span></div>
+        <div class="vs-row"><span class="vs-row-label">Final Expenses</span><span class="vs-row-val" id="lifeNeedFinal">$0</span></div>
+      </div>
+    </div>
+
+    <!-- Gap / Result -->
+    <div style="padding:36px;border-radius:12px;border:1px solid var(--border);background:var(--white);position:relative;overflow:hidden" id="lifeGapCard">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px" id="lifeGapStripe"></div>
+      <div style="font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px">Your Coverage Gap</div>
+      <div style="font-family:var(--font-display);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;line-height:1;margin-bottom:8px" id="lifeGapAmount">$0</div>
+      <div style="font-size:0.85rem;color:var(--text-soft);margin-bottom:24px" id="lifeGapMsg">Your family is underinsured by this amount.</div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;padding-top:16px;border-top:1px solid var(--border)">
+        <div class="vs-row"><span class="vs-row-label">Existing Life Insurance</span><span class="vs-row-val" id="lifeHaveInsurance">$0</span></div>
+        <div class="vs-row"><span class="vs-row-label">Liquid Savings</span><span class="vs-row-val" id="lifeHaveSavings">$0</span></div>
+        <div class="vs-row"><span class="vs-row-label">Total Resources</span><span class="vs-row-val" id="lifeHaveTotal">$0</span></div>
+      </div>
+
+      <!-- Coverage bar -->
+      <div style="margin-top:20px">
+        <div style="font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">Coverage Level</div>
+        <div style="width:100%;height:8px;background:var(--cream-warm);border-radius:4px;overflow:hidden">
+          <div id="lifeCoverageBar" style="height:100%;border-radius:4px;transition:width 0.5s ease,background 0.3s ease;width:0%"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px">
+          <span style="font-size:0.68rem;color:var(--text-muted)" id="lifeCoveragePct">0% covered</span>
+          <span style="font-size:0.68rem;color:var(--text-muted)">100%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Callout boxes -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:48px" id="lifeCallouts">
+    <div style="padding:16px 20px;border-radius:8px;font-size:0.8rem;line-height:1.6" id="lifeCallout1">
+      <strong>Income Replacement:</strong> <span id="lifeCalloutYears">10</span> years of income gives your family time to adjust, grieve, and rebuild without financial panic.
+    </div>
+    <div style="padding:16px 20px;border-radius:8px;font-size:0.8rem;line-height:1.6" id="lifeCallout2">
+      <strong>Debt Freedom:</strong> Life insurance can instantly pay off the mortgage and debts — your family keeps the house and starts fresh.
+    </div>
+    <div style="padding:16px 20px;border-radius:8px;font-size:0.8rem;line-height:1.6" id="lifeCallout3">
+      <strong>Education Secured:</strong> <span id="lifeCalloutKids">2</span> children with college funded means your legacy includes their future, not just your memory.
+    </div>
+  </div>
+
+  <!-- What kind of policy? -->
+  <div style="padding:32px;border-radius:12px;border:1px solid var(--border);background:var(--white);margin-bottom:40px">
+    <div style="font-family:var(--font-display);font-size:1.2rem;font-weight:700;margin-bottom:16px">What kind of policy fills this gap?</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div style="padding:20px;border-radius:8px;background:var(--sage-dim);border:1px solid rgba(61,107,92,0.12)">
+        <div style="font-weight:700;font-size:0.85rem;color:var(--sage);margin-bottom:6px">Indexed Universal Life (IUL)</div>
+        <div style="font-size:0.8rem;line-height:1.6;color:var(--text-soft)">Death benefit + cash value that grows tax-free. Access money while you're alive. Best for families who want protection and wealth building in one vehicle.</div>
+      </div>
+      <div style="padding:20px;border-radius:8px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.15)">
+        <div style="font-weight:700;font-size:0.85rem;color:var(--gold-dark);margin-bottom:6px">Term Life Insurance</div>
+        <div style="font-size:0.8rem;line-height:1.6;color:var(--text-soft)">Pure protection for a set period (10-30 years). Lower premiums, no cash value. Best for covering a specific need like a mortgage or while kids are young.</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px">
+      <a href="#" onclick="switchTab('iul',document.querySelector('.tab-btn'));document.querySelectorAll('.tab-btn')[0].classList.add('active');document.querySelectorAll('.tab-btn')[2].classList.remove('active');return false;" style="font-size:0.82rem;font-weight:700;color:var(--sage)">See how an IUL compares to a 401(k) →</a>
+    </div>
+  </div>
+
+  <div style="text-align:center">
+    <a href="/#cta" class="cta-btn" style="display:inline-flex">Find Out Exactly What You Need →</a>
+    <div style="font-size:0.75rem;color:var(--text-muted);margin-top:12px">Free 30-minute call. We'll review your full picture and recommend the right coverage.</div>
+  </div>
+
+</div>
+</div>
+
+<!-- SHARED BOTTOM (inside max-width container) -->
+<div style="max-width:1200px;margin:0 auto;padding:0 48px 80px">
+
+  <!-- Coming Soon -->
+  <div class="coming-soon">
+    <div class="coming-soon-title">More calculators coming soon.</div>
+    <div class="coming-soon-sub">We're building tools to help you see the full picture.</div>
+    <div class="soon-grid">
+      <div class="soon-card">
+        <div class="soon-badge">Coming Soon</div>
+        <div class="soon-card-title">Medicare Savings</div>
+        <div class="soon-card-desc">Compare Medicare plan options and see how much you could save with the right coverage.</div>
+      </div>
+      <div class="soon-card">
+        <div class="soon-badge">Coming Soon</div>
+        <div class="soon-card-title">Estate Tax Estimator</div>
+        <div class="soon-card-desc">Estimate what your estate could owe in taxes and how a trust could protect your legacy.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-banner">
+    <h2 class="cta-banner-title">Want to see your <em>real</em> numbers?</h2>
+    <p class="cta-banner-sub">In a free 30-minute call, we'll build a personalized projection based on your actual situation. No jargon, no pressure.</p>
+    <a href="/#cta" class="cta-btn">Book a Free Consultation →</a>
+  </div>
+
+  <!-- DISCLAIMERS -->
+  <div class="disclaimer-section" id="disclaimers">
+    <div class="disclaimer-title">Important Disclosures</div>
+    <div class="disclaimer-text">
+      <p><sup>*</sup> <strong>For educational purposes only.</strong> These calculators provide simplified, hypothetical projections and are not intended as financial, tax, or legal advice. Actual results will vary based on individual circumstances, market conditions, specific product selection, and other factors not represented in these models. Always consult a licensed financial professional before making any financial decisions.</p>
+
+      <p><sup>†</sup> <strong>IUL Floor Rate.</strong> The 0% floor means the index-linked interest credited to the cash value will not be less than 0% in a given crediting period. This does not mean the overall cash value cannot decline — policy charges including cost of insurance (COI), administrative fees, and premium loads are deducted regardless of index performance and can reduce cash value. The floor applies only to the indexed interest crediting, not to the total policy value.</p>
+
+      <p><sup>‡</sup> <strong>Cap, Participation Rates &amp; Carrier Data.</strong> Rates displayed reflect current declared rates from Allianz Life Insurance Company of North America (Allianz Life Accumulator&reg;) and Fidelity &amp; Guaranty Life Insurance Company (F&amp;G Pathsetter&reg;) as of their most recent published rate sheets. These include: Allianz S&amp;P 500&reg; Annual PtP (12.25% cap, 100% participation), Allianz S&amp;P 500&reg; Futures ER Classic (75% participation, no cap, 1% guaranteed bonus), Allianz Bloomberg US Dynamic Balance III Select (175% participation, 40% multiplier bonus, 1% asset charge); F&amp;G S&amp;P 500&reg; One-Year Annual PtP (11.50% cap, 100% participation), F&amp;G Blackrock Market Advantage&trade; (150% participation, 1% bonus yr 2+), F&amp;G Morgan Stanley US Equity Allocator (100% participation, no cap). All rates are current and non-guaranteed — they are set by the insurance carrier and may change at any time at the carrier's discretion. Historical lookback averages shown are based on carrier-published backtested data and do not represent actual policy performance. Past performance does not guarantee future results.</p>
+
+      <p><sup>§</sup> <strong>Tax-Free Income via Policy Loans.</strong> Distributions from a life insurance policy through policy loans are generally income tax-free under IRC §7702, provided the policy is not classified as a Modified Endowment Contract (MEC) and remains in force. Policy loans accrue interest, reduce the death benefit, and reduce cash surrender value. If a policy lapses or is surrendered with an outstanding loan balance, the loan amount may be subject to ordinary income tax. This calculator does not account for loan interest charges. Consult a tax professional regarding your specific situation.</p>
+
+      <p><sup>‖‖</sup> <strong>Death Benefit.</strong> IUL policies include a tax-free death benefit payable to named beneficiaries under IRC §101(a). The estimated death benefit shown is a simplified projection and will vary based on the specific policy design, face amount, policy charges, and whether the policy is structured for maximum accumulation or maximum death benefit. Policy loans and withdrawals reduce the death benefit. The death benefit is paid by the issuing insurance company and is subject to the financial strength and claims-paying ability of that company. For an accurate death benefit projection, request a formal policy illustration from a licensed agent.</p>
+
+      <p><sup>‖</sup> <strong>Estimated Policy Costs.</strong> Cost of Insurance (COI) charges shown are simplified estimates based on generalized mortality assumptions and do not represent any specific carrier or product. Actual COI charges vary significantly based on age, health classification, gender, policy face amount, and carrier. Policy fees including administrative charges, premium loads, surrender charges, and rider costs are also simplified. For accurate policy cost projections, request a formal illustration from a licensed agent.</p>
+
+      <p><sup>**</sup> <strong>Federal Taxes at Withdrawal.</strong> All 401(k) withdrawals are taxed as ordinary income at your federal income tax rate in the year of withdrawal. The tax bracket shown is an estimate — actual bracket depends on total taxable income in retirement, including Social Security benefits, pensions, and other income sources. Tax rates and brackets are subject to change by Congress.</p>
+
+      <p><sup>††</sup> <strong>State Income Taxes.</strong> As of 2026, 14 states tax retirement income including 401(k) withdrawals: California, Connecticut, Hawaii, Idaho, Illinois, Iowa, Kansas, Minnesota, Montana, Nebraska, North Carolina, Oregon, Vermont, and West Virginia. State tax rates vary. This calculator applies an estimated 5% average state tax rate for illustration. Some states offer partial exemptions. IUL policy loan income is not subject to state income tax. Consult a tax professional for your state's specific treatment.</p>
+
+      <p><sup>‡‡</sup> <strong>Early Withdrawal Penalty.</strong> Withdrawals from a 401(k) before age 59½ are generally subject to a 10% federal early withdrawal penalty in addition to ordinary income taxes, with limited exceptions. The full withdrawal amount is added to your taxable income for the year, which can push you into a higher tax bracket — meaning you may owe significantly more in taxes than your current marginal rate suggests. IUL policy loans have no age restrictions and no early access penalties.</p>
+
+      <p><sup>§§</sup> <strong>Required Minimum Distributions (RMDs).</strong> Under the SECURE 2.0 Act, Required Minimum Distributions from 401(k) plans, traditional IRAs, and annuities must begin at age 73 (increasing to 75 in 2033). RMDs are calculated based on your account balance and IRS life expectancy tables. Failure to take RMDs results in a 25% excise tax on the amount not distributed. RMDs are taxed as ordinary income and cannot be deferred. IUL policies have no required minimum distributions at any age — you maintain full control over when and how much you access.</p>
+
+      <p><strong>401(k) Assumptions.</strong> The 401(k) projection uses a simulated sequence of annual returns based on historical market patterns. Actual market returns are unpredictable and past performance does not guarantee future results. This model does not account for employer matching, catch-up contributions, or changes in tax law. The 4% withdrawal rule is a general guideline and not a guarantee of income sustainability.</p>
+
+      <p><strong>Fee Calculator Assumptions.</strong> Advisor fees are modeled as a percentage of assets under management (AUM), deducted annually. CPA fees are modeled as a flat annual cost with no inflation adjustment. Fund expense ratios are deducted from gross returns. "Lost growth" represents the hypothetical future value of fee dollars if they had remained invested at the stated return rate. Actual fees, services, and value provided vary by provider.</p>
+
+      <p><strong>General.</strong> Power Financial is an independent insurance agency. Insurance products are offered through licensed agents under the Experior Financial Group network. Products and services are not available in all states. Insurance products are not deposits, are not FDIC insured, are not insured by any federal government agency, are not guaranteed by a bank or any bank affiliate, and may lose value. All guarantees are based on the financial strength and claims-paying ability of the issuing insurance company.</p>
+
+      <p style="margin-top:20px;font-size:0.68rem;color:var(--text-muted)">© 2026 Power Financial. All rights reserved. | <a href="#" style="color:var(--gold-dark)">Privacy Policy</a> · <a href="#" style="color:var(--gold-dark)">Terms</a> · <a href="#" style="color:var(--gold-dark)">Disclosures</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo"><span>Pwr</span> Financial</div>
+      <div class="footer-tagline">Empowering individuals and families with strategic financial guidance and wealth management solutions.</div>
+      <div class="footer-legal-text">Power Financial is an independent insurance agency. Products and services vary by state. Insurance products are offered through Experior Financial Group.</div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Services</div>
+      <ul>
+        <li><a href="/#services">Tax-Free Retirement</a></li>
+        <li><a href="/#services">Life Insurance</a></li>
+        <li><a href="/#services">Asset Protection</a></li>
+        <li><a href="/#services">Medicare Planning</a></li>
+        <li><a href="/#services">Wills & Trusts</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Company</div>
+      <ul>
+        <li><a href="/about">About Us</a></li>
+        <li><a href="/#team">Meet the Team</a></li>
+        <li><a href="/calculators">Calculators</a></li>
+        <li><a href="/#testimonials">Client Reviews</a></li>
+        <li><a href="/#cta">Book a Call</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Contact</div>
+      <ul>
+        <li><a href="mailto:operations@powerfinancial.co">operations@powerfinancial.co</a></li>
+        <li><span style="font-size:0.82rem">Serving clients nationwide</span></li>
+        <li><span style="font-size:0.82rem">Mon–Fri 9am–6pm</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Power Financial. All rights reserved.</span>
+    <div class="footer-bottom-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms</a>
+      <a href="#">Disclosures</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===== TAB SWITCHING =====
+function switchTab(id, btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.calc-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+  window.scrollTo({top:document.querySelector('.tabs').offsetTop-80,behavior:'smooth'});
+}
+
+// ===== HELPERS =====
+function fmt(n){
+  if(Math.abs(n)>=1000000) return '$'+(n/1000000).toFixed(2)+'M';
+  return '$'+Math.round(Math.abs(n)).toLocaleString();
+}
+
+// ===== SIMULATED RETURNS =====
+const mkt=[0.12,0.01,-0.10,0.15,0.20,0.08,-0.05,0.18,0.25,-0.35,
+  0.23,0.12,0.0,0.13,0.30,0.11,0.01,0.10,0.19,-0.06,
+  0.29,0.16,0.26,-0.20,0.28,0.09,0.03,0.14,0.22,-0.12,
+  0.18,0.10,0.07,0.24,0.15,-0.04,0.21,0.08,0.17,0.05,
+  0.11,0.13,-0.08,0.19,0.06];
+
+// ===================================
+// CARRIER DATA (from actual rate sheets)
+// ===================================
+const carrierData = {
+  allianz: {
+    name: 'Allianz Life Accumulator\u00AE',
+    conservative: {
+      strategy: 'S&P 500\u00AE Annual Point-to-Point (Standard)',
+      cap: 0.1225, floor: 0, participation: 1.0,
+      avgMin: 0.0719, avgMax: 0.0861,
+      details: '100% Participation \u00B7 12.25% Cap \u00B7 0% Floor \u00B7 10-15yr Avg: 7.19\u20138.61%'
+    },
+    moderate: {
+      strategy: 'S&P 500\u00AE Futures ER Point-to-Point (Classic)',
+      cap: null, floor: 0, participation: 0.75,
+      avgMin: 0.0850, avgMax: 0.1048, bonus: 0.01,
+      details: '75% Participation \u00B7 No Cap \u00B7 0% Floor \u00B7 1% Guaranteed Bonus \u00B7 10-20yr Avg: 8.50\u201310.48%'
+    },
+    aggressive: {
+      strategy: 'Bloomberg US Dynamic Balance III ER (Select)',
+      cap: null, floor: 0, participation: 1.75,
+      avgMin: 0.0834, avgMax: 0.0834, bonus: 0, assetCharge: 0.01,
+      details: '175% Participation \u00B7 No Cap \u00B7 0% Floor \u00B7 40% Multiplier Bonus \u00B7 1% Asset Charge \u00B7 10yr Avg: 8.34%'
+    },
+    fixed: 0.054,
+    trigger: 0.0825
+  },
+  fg: {
+    name: 'F&G Pathsetter\u00AE',
+    conservative: {
+      strategy: 'S&P 500\u00AE One-Year Annual PtP w/ 100% PAR & CAP',
+      cap: 0.115, floor: 0.0025, participation: 1.0,
+      avgMin: 0.0484, avgMax: 0.0876,
+      details: '100% Participation \u00B7 11.50% Cap \u00B7 0.25% Guaranteed Floor \u00B7 Lookback Avg: 4.84\u20138.76% \u00B7 Max Illustrated: 6.88%'
+    },
+    moderate: {
+      strategy: 'Blackrock Market Advantage\u2122 Annual PtP w/ 150% PAR & 1% Bonus',
+      cap: null, floor: 0.0025, participation: 1.50,
+      avgMin: 0.0431, avgMax: 0.1267, bonus: 0.01, bonusStartYr: 2,
+      details: '150% Participation \u00B7 No Cap \u00B7 0.25% Guaranteed Floor \u00B7 1% Bonus (Yr 2+) \u00B7 Lookback Avg: 4.31\u201312.67% \u00B7 Max Illustrated: 5.73%'
+    },
+    aggressive: {
+      strategy: 'Morgan Stanley US Equity Allocator Annual PtP w/ 100% PAR',
+      cap: null, floor: 0.0025, participation: 1.0,
+      avgMin: 0.0525, avgMax: 0.1448,
+      details: '100% Participation \u00B7 No Cap \u00B7 0.25% Guaranteed Floor \u00B7 Lookback Avg: 5.25\u201314.48% \u00B7 Max Illustrated: 6.71%'
+    },
+    fixed: 0.045
+  }
+};
+
+// ===================================
+// CALC 1: 401(k) vs IUL
+// ===================================
+function getStrategy(){
+  const carrier = document.getElementById('iulCarrier').value;
+  const risk = document.getElementById('iulRisk').value;
+  return { carrier: carrierData[carrier], profile: carrierData[carrier][risk], carrierKey: carrier, riskKey: risk };
+}
+
+function updateStrategyInfo(){
+  const { carrier, profile } = getStrategy();
+  document.getElementById('strategyName').textContent = profile.strategy;
+  document.getElementById('strategyDetails').textContent = profile.details;
+}
+
+function calcIUL(){
+  const age=+document.getElementById('iulAge').value;
+  const monthly=+document.getElementById('iulContrib').value;
+  const retire=+document.getElementById('iulRetire').value;
+  const taxRate=+document.getElementById('iulTax').value/100;
+
+  const { carrier, profile, carrierKey, riskKey } = getStrategy();
+  updateStrategyInfo();
+
+  document.getElementById('iulAgeVal').textContent=age;
+  document.getElementById('iulContribVal').textContent='$'+monthly.toLocaleString();
+  document.getElementById('iulRetireVal').textContent=retire;
+  document.getElementById('iulTaxVal').textContent=document.getElementById('iulTax').value+'%';
+
+  const years=Math.max(retire-age,1);
+  const annual=monthly*12;
+  const capRate = profile.cap;
+  const floorRate = profile.floor;
+  const parRate = profile.participation;
+  const bonusRate = profile.bonus || 0;
+  const bonusStartYr = profile.bonusStartYr || 1;
+  const assetCharge = profile.assetCharge || 0;
+
+  // Use the midpoint of lookback averages as the illustrative credited rate
+  const illustratedRate = (profile.avgMin + profile.avgMax) / 2;
+
+  // --- 401(k) Simulation (market sequence) ---
+  let k401=0; const k401H=[0];
+  for(let y=0;y<years;y++){
+    const r=mkt[y%mkt.length];
+    k401=(k401+annual)*(1+r);
+    if(k401<0) k401=0;
+    k401H.push(k401);
+  }
+  const k401C=annual*years, k401G=k401-k401C;
+  const k401T=k401*taxRate;
+  // Estimate state tax (avg ~5% for the 14 states that tax retirement income)
+  const stateTaxRate=0.05;
+  const k401ST=k401*stateTaxRate;
+  const k401AT=k401-k401T-k401ST;
+  const k401M=(k401AT*0.04)/12;
+
+  // --- IUL Simulation ---
+  let iul=0, totalCOI=0; const iulH=[0];
+  for(let y=0;y<years;y++){
+    const r=mkt[y%mkt.length];
+
+    // Apply participation rate to market return
+    let indexReturn = r * parRate;
+
+    // Apply cap if exists
+    if(capRate !== null) indexReturn = Math.min(indexReturn, capRate);
+
+    // Apply floor
+    indexReturn = Math.max(indexReturn, floorRate);
+
+    // Apply bonus
+    const yearBonus = (y+1 >= bonusStartYr) ? bonusRate : 0;
+    const creditedRate = indexReturn + yearBonus;
+
+    // Premium in
+    iul += annual;
+
+    // Cost of insurance (simplified estimate — varies by age/sex/health/amount)
+    const ca = age + y;
+    const coi = (ca<40)?360:(ca<50)?720:(ca<60)?1440:2880;
+    const policyCost = coi + 120; // COI + admin
+    totalCOI += policyCost;
+    iul -= policyCost;
+
+    // Asset charge (Allianz Select tier)
+    if(assetCharge > 0) {
+      const ac = iul * assetCharge;
+      totalCOI += ac;
+      iul -= ac;
+    }
+
+    // Credited interest
+    iul = iul * (1 + creditedRate);
+    if(iul < 0) iul = 0;
+    iulH.push(iul);
+  }
+  const iulP=annual*years, iulG=iul-iulP+totalCOI, iulM=(iul*0.04)/12;
+
+  // Estimate death benefit (typically 10-15x annual premium in early years, decreasing over time)
+  const deathBenefit = Math.max(iul * 1.5, annual * 12);
+
+  document.getElementById('k401Total').textContent=fmt(k401);
+  document.getElementById('k401Contrib').textContent=fmt(k401C);
+  document.getElementById('k401Growth').textContent=fmt(k401G);
+  document.getElementById('k401Taxes').textContent='-'+fmt(k401T);
+  document.getElementById('k401StateTax').textContent='-'+fmt(k401ST);
+  document.getElementById('k401AfterTax').textContent=fmt(k401AT);
+  document.getElementById('k401Monthly').textContent=fmt(k401M)+'/mo';
+
+  document.getElementById('iulTotal').textContent=fmt(iul);
+  document.getElementById('iulPremiums').textContent=fmt(iulP);
+  document.getElementById('iulGrowth').textContent=fmt(iulG);
+  document.getElementById('iulCosts').textContent='-'+fmt(totalCOI);
+  document.getElementById('iulMonthly').textContent=fmt(iulM)+'/mo';
+  document.getElementById('iulDeath').textContent=fmt(deathBenefit);
+
+  const adv=iul-k401AT, mAdv=iulM-k401M;
+  document.getElementById('advAmount').textContent=(adv>=0?'+':'-')+fmt(Math.abs(adv));
+  document.getElementById('advMonthly').textContent=(mAdv>=0?'+':'-')+fmt(Math.abs(mAdv))+'/mo more income';
+  const bar=document.getElementById('advBar');
+  const txt=document.getElementById('advText');
+  if(adv>=0){
+    bar.className='advantage-bar positive'; txt.textContent='IUL Advantage';
+  } else {
+    bar.className='advantage-bar negative'; txt.textContent='401(k) Advantage in this scenario';
+  }
+
+  drawChart(k401H,iulH,years);
+}
+
+function drawChart(d1,d2,years){
+  const canvas=document.getElementById('growthChart');
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const rect=canvas.parentElement.getBoundingClientRect();
+  const W=rect.width-40, H=rect.height-40;
+  canvas.width=(rect.width)*dpr; canvas.height=(rect.height)*dpr;
+  canvas.style.width=rect.width+'px'; canvas.style.height=rect.height+'px';
+  ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,rect.width,rect.height);
+  ctx.save(); ctx.translate(20,10);
+
+  const max=Math.max(...d1,...d2)*1.1||1;
+  const sx=W/(d1.length-1);
+
+  ctx.strokeStyle='rgba(28,14,5,0.05)'; ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const y=H-(H*(i/4));
+    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+    ctx.fillStyle='rgba(28,14,5,0.3)';
+    ctx.font='10px Inter,sans-serif';
+    ctx.fillText(fmt(max*(i/4)),2,y-4);
+  }
+  for(let i=0;i<d1.length;i+=Math.max(1,Math.floor(years/6))){
+    ctx.fillText('Yr '+i, i*sx, H+14);
+  }
+
+  // 401k line + fill
+  ctx.beginPath(); ctx.strokeStyle='rgba(196,97,74,0.7)'; ctx.lineWidth=2.5;
+  d1.forEach((v,i)=>{ const x=i*sx,y=H-(v/max)*H; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+  ctx.stroke();
+  ctx.beginPath();
+  d1.forEach((v,i)=>{ const x=i*sx,y=H-(v/max)*H; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+  ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();
+  const g1=ctx.createLinearGradient(0,0,0,H);
+  g1.addColorStop(0,'rgba(196,97,74,0.08)');g1.addColorStop(1,'rgba(196,97,74,0)');
+  ctx.fillStyle=g1;ctx.fill();
+
+  // IUL line + fill
+  ctx.beginPath(); ctx.strokeStyle='rgba(61,107,92,0.85)'; ctx.lineWidth=2.5;
+  d2.forEach((v,i)=>{ const x=i*sx,y=H-(v/max)*H; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+  ctx.stroke();
+  ctx.beginPath();
+  d2.forEach((v,i)=>{ const x=i*sx,y=H-(v/max)*H; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+  ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();
+  const g2=ctx.createLinearGradient(0,0,0,H);
+  g2.addColorStop(0,'rgba(61,107,92,0.1)');g2.addColorStop(1,'rgba(61,107,92,0)');
+  ctx.fillStyle=g2;ctx.fill();
+
+  ctx.restore();
+}
+
+['iulAge','iulContrib','iulRetire','iulTax','iulCarrier','iulRisk'].forEach(id=>
+  document.getElementById(id).addEventListener(id.includes('iul')&&(id==='iulCarrier'||id==='iulRisk')?'change':'input',calcIUL));
+calcIUL();
+window.addEventListener('resize',calcIUL);
+
+// ===================================
+// CALC 2: FEE EROSION
+// ===================================
+function calcFees(){
+  const portfolio=+document.getElementById('feePortfolio').value;
+  const cpa=+document.getElementById('feeCPA').value;
+  const advPct=+document.getElementById('feeAdvisor').value/100;
+  const expPct=+document.getElementById('feeExpense').value/100;
+  const ret=+document.getElementById('feeReturn').value/100;
+  const years=+document.getElementById('feeYears').value;
+
+  document.getElementById('feePortfolioVal').textContent=fmt(portfolio);
+  document.getElementById('feeCPAVal').textContent='$'+cpa.toLocaleString();
+  document.getElementById('feeAdvisorVal').textContent=(+document.getElementById('feeAdvisor').value).toFixed(2)+'%';
+  document.getElementById('feeExpenseVal').textContent=(+document.getElementById('feeExpense').value).toFixed(2)+'%';
+  document.getElementById('feeReturnVal').textContent=document.getElementById('feeReturn').value+'%';
+  document.getElementById('feeYearsVal').textContent=years+' years';
+
+  let noFee=portfolio, withFee=portfolio, totalCPA=0, totalAdv=0;
+  const tbody=document.getElementById('feeTableBody');
+  tbody.innerHTML='';
+  const show=[];
+  for(let y=1;y<=years;y++){if(y<=5||y%5===0||y===years) show.push(y)}
+
+  for(let y=1;y<=years;y++){
+    noFee=noFee*(1+ret);
+    const aFee=withFee*advPct, eFee=withFee*expPct;
+    withFee=withFee*(1+ret-advPct-expPct)-cpa;
+    if(withFee<0) withFee=0;
+    totalCPA+=cpa; totalAdv+=aFee+eFee;
+
+    if(show.includes(y)){
+      const diff=noFee-withFee;
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td class="year-cell">Year ${y}</td><td>${fmt(noFee)}</td><td>${fmt(withFee)}</td><td class="loss">${fmt(totalCPA+totalAdv)}</td><td class="opp">${fmt(diff)}</td>`;
+      tbody.appendChild(tr);
+    }
+  }
+
+  const lost=noFee-withFee;
+  document.getElementById('feeCPATotal').textContent=fmt(totalCPA);
+  document.getElementById('feeCPASub').textContent='over '+years+' years';
+  document.getElementById('feeAdvisorTotal').textContent=fmt(totalAdv);
+  document.getElementById('feeTotalLost').textContent=fmt(lost);
+  document.getElementById('oppAmount').textContent=fmt(lost);
+  document.getElementById('oppDetail').textContent='in lost retirement wealth over '+years+' years';
+}
+
+['feePortfolio','feeCPA','feeAdvisor','feeExpense','feeReturn','feeYears'].forEach(id=>
+  document.getElementById(id).addEventListener('input',calcFees));
+calcFees();
+
+// ===================================
+// CALC 3: LIFE INSURANCE NEEDS
+// ===================================
+function calcLife(){
+  const income=+document.getElementById('lifeIncome').value;
+  const years=+document.getElementById('lifeYears').value;
+  const deps=+document.getElementById('lifeDependents').value;
+  const childAge=+document.getElementById('lifeChildAge').value;
+  const mortgage=+document.getElementById('lifeMortgage').value;
+  const debts=+document.getElementById('lifeDebts').value;
+  const college=+document.getElementById('lifeCollege').value;
+  const final_=+document.getElementById('lifeFinal').value;
+  const existing=+document.getElementById('lifeExisting').value;
+  const savings=+document.getElementById('lifeSavings').value;
+
+  // Update displays
+  document.getElementById('lifeIncomeVal').textContent=fmt(income);
+  document.getElementById('lifeYearsVal').textContent=years+' years';
+  document.getElementById('lifeDependentsVal').textContent=deps;
+  document.getElementById('lifeChildAgeVal').textContent=childAge;
+  document.getElementById('lifeMortgageVal').textContent=fmt(mortgage);
+  document.getElementById('lifeDebtsVal').textContent=fmt(debts);
+  document.getElementById('lifeCollegeVal').textContent=fmt(college);
+  document.getElementById('lifeFinalVal').textContent=fmt(final_);
+  document.getElementById('lifeExistingVal').textContent=fmt(existing);
+  document.getElementById('lifeSavingsVal').textContent=fmt(savings);
+
+  // Calculate needs
+  const needIncome = income * years;
+  const needCollege = college * deps;
+  const totalNeed = needIncome + mortgage + debts + needCollege + final_;
+  const totalHave = existing + savings;
+  const gap = totalNeed - totalHave;
+  const coveragePct = totalNeed > 0 ? Math.min((totalHave / totalNeed) * 100, 100) : 100;
+
+  // Update need breakdown
+  document.getElementById('lifeTotalNeed').textContent = fmt(totalNeed);
+  document.getElementById('lifeNeedIncome').textContent = fmt(needIncome);
+  document.getElementById('lifeNeedMortgage').textContent = fmt(mortgage);
+  document.getElementById('lifeNeedDebts').textContent = fmt(debts);
+  document.getElementById('lifeNeedCollege').textContent = fmt(needCollege);
+  document.getElementById('lifeNeedFinal').textContent = fmt(final_);
+
+  // Update have breakdown
+  document.getElementById('lifeHaveInsurance').textContent = fmt(existing);
+  document.getElementById('lifeHaveSavings').textContent = fmt(savings);
+  document.getElementById('lifeHaveTotal').textContent = fmt(totalHave);
+
+  // Gap card
+  const stripe = document.getElementById('lifeGapStripe');
+  const gapEl = document.getElementById('lifeGapAmount');
+  const msgEl = document.getElementById('lifeGapMsg');
+  const bar = document.getElementById('lifeCoverageBar');
+  const pct = document.getElementById('lifeCoveragePct');
+
+  if(gap > 0){
+    gapEl.textContent = fmt(gap);
+    gapEl.style.color = 'var(--terracotta)';
+    stripe.style.background = 'var(--terracotta)';
+    msgEl.textContent = 'Your family is underinsured by this amount.';
+    bar.style.background = coveragePct < 50 ? 'var(--terracotta)' : 'var(--gold)';
+  } else {
+    gapEl.textContent = '$0';
+    gapEl.style.color = 'var(--sage)';
+    stripe.style.background = 'var(--sage)';
+    msgEl.textContent = 'Your family appears adequately covered — but review annually.';
+    bar.style.background = 'var(--sage)';
+  }
+  bar.style.width = Math.max(coveragePct, 2) + '%';
+  pct.textContent = Math.round(coveragePct) + '% covered';
+
+  // Callout boxes color
+  const calloutColor = gap > 0 ? 'var(--red-dim)' : 'var(--sage-dim)';
+  const calloutText = gap > 0 ? 'var(--terracotta)' : 'var(--sage)';
+  ['lifeCallout1','lifeCallout2','lifeCallout3'].forEach(id=>{
+    const el = document.getElementById(id);
+    el.style.background = calloutColor;
+    el.style.color = calloutText;
+  });
+  document.getElementById('lifeCalloutYears').textContent = years;
+  document.getElementById('lifeCalloutKids').textContent = deps;
+}
+
+['lifeIncome','lifeYears','lifeDependents','lifeChildAge','lifeMortgage','lifeDebts',
+ 'lifeCollege','lifeFinal','lifeExisting','lifeSavings'].forEach(id=>
+  document.getElementById(id).addEventListener('input',calcLife));
+calcLife();
+
+// ===== GSAP ENTRANCE =====
+gsap.registerPlugin(ScrollTrigger);
+gsap.from('.page-header',{opacity:0,y:20,duration:0.8,ease:'power2.out'});
+gsap.from('.tabs',{opacity:0,y:10,duration:0.6,delay:0.3});
+</script>
+</body>
+</html>
