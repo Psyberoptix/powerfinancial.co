@@ -390,6 +390,23 @@ img { max-width: 100%; display: block; }
 .form-cta { width: 100%; margin-top: 16px; padding: 16px; font-size: 0.92rem; font-weight: 700; letter-spacing: 0.04em; border-radius: 6px; }
 .form-footnote { font-size: 0.73rem; color: rgba(255,255,255,0.25); text-align: center; margin-top: 12px; line-height: 1.5; }
 
+
+/* SMS Opt-In Consent */
+.sms-consent-section { margin-top: 18px; padding: 16px 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; }
+.consent-checkbox { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; margin-bottom: 12px; position: relative; }
+.consent-checkbox:last-of-type { margin-bottom: 10px; }
+.consent-checkbox input[type="checkbox"] { position: absolute; opacity: 0; width: 0; height: 0; }
+.consent-checkbox .checkmark { flex-shrink: 0; width: 18px; height: 18px; border: 1.5px solid rgba(255,255,255,0.25); border-radius: 4px; margin-top: 1px; transition: all 0.2s; background: rgba(255,255,255,0.03); }
+.consent-checkbox input[type="checkbox"]:checked + .checkmark { background: var(--gold); border-color: var(--gold); }
+.consent-checkbox input[type="checkbox"]:checked + .checkmark::after { content: '\2713'; display: block; color: var(--ink); font-size: 12px; font-weight: 700; text-align: center; line-height: 16px; }
+.consent-checkbox:hover .checkmark { border-color: rgba(255,255,255,0.45); }
+.consent-text { font-size: 0.7rem; color: rgba(255,255,255,0.4); line-height: 1.55; }
+.consent-text strong { color: rgba(255,255,255,0.6); font-weight: 600; }
+.consent-note { font-size: 0.68rem; color: rgba(255,255,255,0.25); line-height: 1.55; margin-top: 8px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); }
+.consent-note a { color: rgba(255,255,255,0.4); text-decoration: underline; text-underline-offset: 2px; }
+.consent-note a:hover { color: var(--gold); }
+.consent-real-talk { display: block; margin-top: 6px; font-style: italic; color: rgba(255,255,255,0.35); }
+
 /* ══════════════════════════════════
    TESTIMONIALS
 ══════════════════════════════════ */
